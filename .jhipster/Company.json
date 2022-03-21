@@ -1,0 +1,49 @@
+{
+  "applications": "*",
+  "changelogDate": "20220321150343",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "company",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "raisonSocial",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "companyType",
+      "fieldType": "CompanyType",
+      "fieldValues": "SGE,CMCAS,ENTERPRISE"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Company",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "socialOrganization",
+      "otherEntityRelationshipName": "company",
+      "ownerSide": true,
+      "relationshipName": "socialOrganization",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "applicationUser",
+      "otherEntityRelationshipName": "company",
+      "relationshipName": "applicationUser",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "timeSheet",
+      "otherEntityRelationshipName": "company",
+      "relationshipName": "timeSheet",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "serviceImpl"
+}

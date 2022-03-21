@@ -1,0 +1,132 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="timeSheet">
+      <h2 data-cy="timeSheetDetailsHeading"><span>Time Sheet</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ timeSheet.id }}</span>
+        </dd>
+        <dt><span>Employee Civility</span></dt>
+        <dd>
+          <span>{{ timeSheet.employeeCivility }}</span>
+        </dd>
+        <dt><span>Employee First Name</span></dt>
+        <dd>
+          <span>{{ timeSheet.employeeFirstName }}</span>
+        </dd>
+        <dt><span>Employee Last Name</span></dt>
+        <dd>
+          <span>{{ timeSheet.employeeLastName }}</span>
+        </dd>
+        <dt><span>Registry Number</span></dt>
+        <dd>
+          <span>{{ timeSheet.registryNumber }}</span>
+        </dd>
+        <dt><span>Date From</span></dt>
+        <dd>
+          <span>{{ timeSheet.dateFrom | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Date To</span></dt>
+        <dd>
+          <span>{{ timeSheet.dateTo | formatMediumDate }}</span>
+        </dd>
+        <dt><span>Direction</span></dt>
+        <dd>
+          <span>{{ timeSheet.direction }}</span>
+        </dd>
+        <dt><span>Division</span></dt>
+        <dd>
+          <span>{{ timeSheet.division }}</span>
+        </dd>
+        <dt><span>Um</span></dt>
+        <dd>
+          <span>{{ timeSheet.um }}</span>
+        </dd>
+        <dt><span>Status</span></dt>
+        <dd>
+          <span>{{ timeSheet.status }}</span>
+        </dd>
+        <dt><span>Ccas</span></dt>
+        <dd>
+          <span>{{ timeSheet.ccas }}</span>
+        </dd>
+        <dt><span>Nb Hours Ccas</span></dt>
+        <dd>
+          <span>{{ timeSheet.nbHoursCcas }}</span>
+        </dd>
+        <dt><span>Coordinating Committee</span></dt>
+        <dd>
+          <span>{{ timeSheet.coordinatingCommittee }}</span>
+        </dd>
+        <dt><span>Nb Hours Cdc</span></dt>
+        <dd>
+          <span>{{ timeSheet.nbHoursCdc }}</span>
+        </dd>
+        <dt><span>Nb Hours Admin</span></dt>
+        <dd>
+          <span>{{ timeSheet.nbHoursAdmin }}</span>
+        </dd>
+        <dt><span>Nb Hours Pot Fd Cfdt</span></dt>
+        <dd>
+          <span>{{ timeSheet.nbHoursPotFdCfdt }}</span>
+        </dd>
+        <dt><span>Nb Hours Pot Fd Cgt</span></dt>
+        <dd>
+          <span>{{ timeSheet.nbHoursPotFdCgt }}</span>
+        </dd>
+        <dt><span>Nb Hours Pot Fd Fo</span></dt>
+        <dd>
+          <span>{{ timeSheet.nbHoursPotFdFo }}</span>
+        </dd>
+        <dt><span>Nb Hours Pot Fd Cfe Cgc</span></dt>
+        <dd>
+          <span>{{ timeSheet.nbHoursPotFdCfeCgc }}</span>
+        </dd>
+        <dt><span>Commission Type</span></dt>
+        <dd>
+          <span>{{ timeSheet.commissionType }}</span>
+        </dd>
+        <dt><span>Nb Hours Commision</span></dt>
+        <dd>
+          <span>{{ timeSheet.nbHoursCommision }}</span>
+        </dd>
+        <dt><span>Proximity Type</span></dt>
+        <dd>
+          <span>{{ timeSheet.proximityType }}</span>
+        </dd>
+        <dt><span>Nb Hours Proximity</span></dt>
+        <dd>
+          <span>{{ timeSheet.nbHoursProximity }}</span>
+        </dd>
+        <dt><span>Request</span></dt>
+        <dd>
+          <div *ngIf="timeSheet.request">
+            <a [routerLink]="['/request', timeSheet.request?.id, 'view']">{{ timeSheet.request?.id }}</a>
+          </div>
+        </dd>
+        <dt><span>Company</span></dt>
+        <dd>
+          <div *ngIf="timeSheet.company">
+            <a [routerLink]="['/company', timeSheet.company?.id, 'view']">{{ timeSheet.company?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/time-sheet', timeSheet.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

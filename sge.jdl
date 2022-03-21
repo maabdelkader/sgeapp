@@ -1,0 +1,107 @@
+
+entity Company {
+	name String,
+    raisonSocial String,
+    companyType CompanyType
+}
+
+entity ApplicationUser {
+}
+
+
+entity SocialOrganization {
+	name String,
+    adminQuota Integer,
+    commissionQuota Integer,
+    proximityQuota Integer,
+    numberOfAdmins Integer
+}
+
+entity Campaign {
+    name String,
+    dateFrom LocalDate,
+    dateTo LocalDate,
+    description String
+}
+
+entity Request {
+	status RequestStatus,
+}
+
+enum RequestStatus {
+  CREATED,
+  SGE_VALIDATION_PENDING,
+  EMPLOYER_VALIDATION_PENDING,
+  VALIDATED,
+  REJECTED
+}
+
+enum CompanyType {
+  SGE,
+  CMCAS,
+  ENTERPRISE
+}
+
+enum TimeSheetStatus {
+ CREATED,
+ SGE_VALIDATION_PENDING,
+ EMPLOYER_VALIDATION_PENDING,
+ VALIDATED,
+ REJECTED
+}
+
+entity TimeSheet {
+    employeeCivility String,
+	employeeFirstName String,
+	employeeLastName String,
+    registryNumber String,
+    dateFrom LocalDate,
+    dateTo LocalDate,
+    direction String,
+    division String,
+    um String,
+    status TimeSheetStatus,
+    ccas String,
+    nbHoursCcas Integer,
+    coordinatingCommittee String,
+    nbHoursCdc Integer,
+    nbHoursAdmin Integer,
+    nbHoursPotFdCfdt Integer,
+    nbHoursPotFdCgt Integer,
+    nbHoursPotFdFo Integer,
+    nbHoursPotFdCfeCgc Integer,
+    commissionType String,
+    nbHoursCommision Integer,
+    proximityType String,
+    nbHoursProximity Integer,
+}
+
+
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+    Company to ApplicationUser{company},
+    ApplicationUser to Request{owner},
+    Request to TimeSheet{request}
+    ApplicationUser to Campaign{admin},
+    Campaign to Request{compaign},
+    Company to TimeSheet{company}
+}
+
+// defining multiple oneToOne relationships
+relationship OneToOne {
+	Company{socialOrganization} to SocialOrganization,
+    ApplicationUser{internalUser} to User
+}
+
+
+// Use Data Transfer Objects (DTO)
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl
+
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
+
+    

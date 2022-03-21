@@ -1,0 +1,40 @@
+{
+  "applications": "*",
+  "changelogDate": "20220321150347",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "request",
+  "fields": [
+    {
+      "fieldName": "status",
+      "fieldType": "RequestStatus",
+      "fieldValues": "CREATED,SGE_VALIDATION_PENDING,EMPLOYER_VALIDATION_PENDING,VALIDATED,REJECTED"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Request",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "timeSheet",
+      "otherEntityRelationshipName": "request",
+      "relationshipName": "timeSheet",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "applicationUser",
+      "otherEntityRelationshipName": "request",
+      "relationshipName": "owner",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "campaign",
+      "otherEntityRelationshipName": "request",
+      "relationshipName": "compaign",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

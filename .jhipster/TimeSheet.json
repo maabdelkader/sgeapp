@@ -1,0 +1,122 @@
+{
+  "applications": "*",
+  "changelogDate": "20220321150348",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "time_sheet",
+  "fields": [
+    {
+      "fieldName": "employeeCivility",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "employeeFirstName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "employeeLastName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "registryNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateFrom",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "dateTo",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "direction",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "division",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "um",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "TimeSheetStatus",
+      "fieldValues": "CREATED,SGE_VALIDATION_PENDING,EMPLOYER_VALIDATION_PENDING,VALIDATED,REJECTED"
+    },
+    {
+      "fieldName": "ccas",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nbHoursCcas",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "coordinatingCommittee",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nbHoursCdc",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "nbHoursAdmin",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "nbHoursPotFdCfdt",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "nbHoursPotFdCgt",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "nbHoursPotFdFo",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "nbHoursPotFdCfeCgc",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "commissionType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nbHoursCommision",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "proximityType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nbHoursProximity",
+      "fieldType": "Integer"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "TimeSheet",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "request",
+      "otherEntityRelationshipName": "timeSheet",
+      "relationshipName": "request",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "company",
+      "otherEntityRelationshipName": "timeSheet",
+      "relationshipName": "company",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

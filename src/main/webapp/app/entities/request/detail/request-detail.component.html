@@ -1,0 +1,44 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="request">
+      <h2 data-cy="requestDetailsHeading"><span>Request</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ request.id }}</span>
+        </dd>
+        <dt><span>Status</span></dt>
+        <dd>
+          <span>{{ request.status }}</span>
+        </dd>
+        <dt><span>Owner</span></dt>
+        <dd>
+          <div *ngIf="request.owner">
+            <a [routerLink]="['/application-user', request.owner?.id, 'view']">{{ request.owner?.id }}</a>
+          </div>
+        </dd>
+        <dt><span>Compaign</span></dt>
+        <dd>
+          <div *ngIf="request.compaign">
+            <a [routerLink]="['/campaign', request.compaign?.id, 'view']">{{ request.compaign?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/request', request.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

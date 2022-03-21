@@ -1,0 +1,90 @@
+<div>
+  <h2 id="page-heading" data-cy="CampaignHeading">
+    <span>Campaigns</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-campaign"
+        [routerLink]="['/campaign/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Campaign </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="campaigns?.length === 0">
+    <span>No campaigns found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="campaigns && campaigns.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span>ID</span></th>
+          <th scope="col"><span>Name</span></th>
+          <th scope="col"><span>Date From</span></th>
+          <th scope="col"><span>Date To</span></th>
+          <th scope="col"><span>Description</span></th>
+          <th scope="col"><span>Admin</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let campaign of campaigns; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/campaign', campaign.id, 'view']">{{ campaign.id }}</a>
+          </td>
+          <td>{{ campaign.name }}</td>
+          <td>{{ campaign.dateFrom | formatMediumDate }}</td>
+          <td>{{ campaign.dateTo | formatMediumDate }}</td>
+          <td>{{ campaign.description }}</td>
+          <td>
+            <div *ngIf="campaign.admin">
+              <a [routerLink]="['/application-user', campaign.admin?.id, 'view']">{{ campaign.admin?.id }}</a>
+            </div>
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/campaign', campaign.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/campaign', campaign.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(campaign)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

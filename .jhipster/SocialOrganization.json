@@ -1,0 +1,36 @@
+{
+  "applications": "*",
+  "changelogDate": "20220321150345",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "social_organization",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "adminQuota",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "commissionQuota",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "proximityQuota",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "numberOfAdmins",
+      "fieldType": "Integer"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "SocialOrganization",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceImpl"
+}

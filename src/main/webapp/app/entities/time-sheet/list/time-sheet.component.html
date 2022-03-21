@@ -1,0 +1,134 @@
+<div>
+  <h2 id="page-heading" data-cy="TimeSheetHeading">
+    <span>Time Sheets</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh List</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-time-sheet"
+        [routerLink]="['/time-sheet/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Time Sheet </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="timeSheets?.length === 0">
+    <span>No timeSheets found</span>
+  </div>
+
+  <div class="table-responsive" id="entities" *ngIf="timeSheets && timeSheets.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col"><span>ID</span></th>
+          <th scope="col"><span>Employee Civility</span></th>
+          <th scope="col"><span>Employee First Name</span></th>
+          <th scope="col"><span>Employee Last Name</span></th>
+          <th scope="col"><span>Registry Number</span></th>
+          <th scope="col"><span>Date From</span></th>
+          <th scope="col"><span>Date To</span></th>
+          <th scope="col"><span>Direction</span></th>
+          <th scope="col"><span>Division</span></th>
+          <th scope="col"><span>Um</span></th>
+          <th scope="col"><span>Status</span></th>
+          <th scope="col"><span>Ccas</span></th>
+          <th scope="col"><span>Nb Hours Ccas</span></th>
+          <th scope="col"><span>Coordinating Committee</span></th>
+          <th scope="col"><span>Nb Hours Cdc</span></th>
+          <th scope="col"><span>Nb Hours Admin</span></th>
+          <th scope="col"><span>Nb Hours Pot Fd Cfdt</span></th>
+          <th scope="col"><span>Nb Hours Pot Fd Cgt</span></th>
+          <th scope="col"><span>Nb Hours Pot Fd Fo</span></th>
+          <th scope="col"><span>Nb Hours Pot Fd Cfe Cgc</span></th>
+          <th scope="col"><span>Commission Type</span></th>
+          <th scope="col"><span>Nb Hours Commision</span></th>
+          <th scope="col"><span>Proximity Type</span></th>
+          <th scope="col"><span>Nb Hours Proximity</span></th>
+          <th scope="col"><span>Request</span></th>
+          <th scope="col"><span>Company</span></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let timeSheet of timeSheets; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/time-sheet', timeSheet.id, 'view']">{{ timeSheet.id }}</a>
+          </td>
+          <td>{{ timeSheet.employeeCivility }}</td>
+          <td>{{ timeSheet.employeeFirstName }}</td>
+          <td>{{ timeSheet.employeeLastName }}</td>
+          <td>{{ timeSheet.registryNumber }}</td>
+          <td>{{ timeSheet.dateFrom | formatMediumDate }}</td>
+          <td>{{ timeSheet.dateTo | formatMediumDate }}</td>
+          <td>{{ timeSheet.direction }}</td>
+          <td>{{ timeSheet.division }}</td>
+          <td>{{ timeSheet.um }}</td>
+          <td>{{ timeSheet.status }}</td>
+          <td>{{ timeSheet.ccas }}</td>
+          <td>{{ timeSheet.nbHoursCcas }}</td>
+          <td>{{ timeSheet.coordinatingCommittee }}</td>
+          <td>{{ timeSheet.nbHoursCdc }}</td>
+          <td>{{ timeSheet.nbHoursAdmin }}</td>
+          <td>{{ timeSheet.nbHoursPotFdCfdt }}</td>
+          <td>{{ timeSheet.nbHoursPotFdCgt }}</td>
+          <td>{{ timeSheet.nbHoursPotFdFo }}</td>
+          <td>{{ timeSheet.nbHoursPotFdCfeCgc }}</td>
+          <td>{{ timeSheet.commissionType }}</td>
+          <td>{{ timeSheet.nbHoursCommision }}</td>
+          <td>{{ timeSheet.proximityType }}</td>
+          <td>{{ timeSheet.nbHoursProximity }}</td>
+          <td>
+            <div *ngIf="timeSheet.request">
+              <a [routerLink]="['/request', timeSheet.request?.id, 'view']">{{ timeSheet.request?.id }}</a>
+            </div>
+          </td>
+          <td>
+            <div *ngIf="timeSheet.company">
+              <a [routerLink]="['/company', timeSheet.company?.id, 'view']">{{ timeSheet.company?.id }}</a>
+            </div>
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/time-sheet', timeSheet.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/time-sheet', timeSheet.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(timeSheet)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

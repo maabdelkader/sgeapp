@@ -1,0 +1,45 @@
+{
+  "applications": "*",
+  "changelogDate": "20220321150346",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "campaign",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateFrom",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "dateTo",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Campaign",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "request",
+      "otherEntityRelationshipName": "compaign",
+      "relationshipName": "request",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "applicationUser",
+      "otherEntityRelationshipName": "campaign",
+      "relationshipName": "admin",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}
