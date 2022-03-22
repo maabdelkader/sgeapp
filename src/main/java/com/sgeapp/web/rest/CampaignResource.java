@@ -1,6 +1,8 @@
 package com.sgeapp.web.rest;
 
 import com.sgeapp.repository.CampaignRepository;
+import com.sgeapp.security.SecurityUtils;
+import com.sgeapp.service.ApplicationUserService;
 import com.sgeapp.service.CampaignService;
 import com.sgeapp.service.dto.CampaignDTO;
 import com.sgeapp.web.rest.errors.BadRequestAlertException;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -35,9 +38,16 @@ public class CampaignResource {
 
     private final CampaignRepository campaignRepository;
 
-    public CampaignResource(CampaignService campaignService, CampaignRepository campaignRepository) {
+    private final ApplicationUserService applicationUserService;
+
+    public CampaignResource(
+        CampaignService campaignService,
+        CampaignRepository campaignRepository,
+        ApplicationUserService applicationUserService
+    ) {
         this.campaignService = campaignService;
         this.campaignRepository = campaignRepository;
+        this.applicationUserService = applicationUserService;
     }
 
     /**
@@ -48,10 +58,15 @@ public class CampaignResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/campaigns")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CampaignDTO> createCampaign(@RequestBody CampaignDTO campaignDTO) throws URISyntaxException {
         log.debug("REST request to save Campaign : {}", campaignDTO);
         if (campaignDTO.getId() != null) {
             throw new BadRequestAlertException("A new campaign cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        if (campaignDTO.getAdmin() == null) {
+            String userLogin = SecurityUtils.getCurrentUserLogin().get();
+            campaignDTO.setAdmin(applicationUserService.findByUserLogin(userLogin).get());
         }
         CampaignDTO result = campaignService.save(campaignDTO);
         return ResponseEntity
