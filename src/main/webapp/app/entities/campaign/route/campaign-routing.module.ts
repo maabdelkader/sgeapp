@@ -27,6 +27,9 @@ const campaignRoute: Routes = [
     resolve: {
       campaign: CampaignRoutingResolveService,
     },
+    data: {
+      authorities: ['ROLE_ADMIN'],
+    },
     canActivate: [UserRouteAccessService],
   },
   {
