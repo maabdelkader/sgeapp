@@ -4,9 +4,15 @@ import com.sgeapp.config.Constants;
 import com.sgeapp.domain.User;
 import com.sgeapp.repository.UserRepository;
 import com.sgeapp.security.AuthoritiesConstants;
+import com.sgeapp.service.ApplicationUserService;
+import com.sgeapp.service.CompanyService;
 import com.sgeapp.service.MailService;
 import com.sgeapp.service.UserService;
 import com.sgeapp.service.dto.AdminUserDTO;
+import com.sgeapp.service.dto.ApplicationUserDTO;
+import com.sgeapp.service.dto.CompanyDTO;
+import com.sgeapp.service.dto.UserDTO;
+import com.sgeapp.service.mapper.UserMapper;
 import com.sgeapp.web.rest.errors.BadRequestAlertException;
 import com.sgeapp.web.rest.errors.EmailAlreadyUsedException;
 import com.sgeapp.web.rest.errors.LoginAlreadyUsedException;
@@ -82,15 +88,26 @@ public class UserResource {
     private String applicationName;
 
     private final UserService userService;
-
     private final UserRepository userRepository;
-
     private final MailService mailService;
+    private final ApplicationUserService applicationUserService;
+    private final UserMapper userMapper;
+    private final CompanyService companyService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    public UserResource(
+        UserService userService,
+        UserRepository userRepository,
+        MailService mailService,
+        ApplicationUserService applicationUserService,
+        UserMapper userMapper,
+        CompanyService companyService
+    ) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.applicationUserService = applicationUserService;
+        this.userMapper = userMapper;
+        this.companyService = companyService;
     }
 
     /**
@@ -100,25 +117,31 @@ public class UserResource {
      * mail with an activation link.
      * The user needs to be activated on creation.
      *
-     * @param userDTO the user to create.
+     * @param adminUserDTO the user to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the login or email is already in use.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
     @PostMapping("/users")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<User> createUser(@Valid @RequestBody AdminUserDTO userDTO) throws URISyntaxException {
-        log.debug("REST request to save User : {}", userDTO);
+    public ResponseEntity<User> createUser(@Valid @RequestBody AdminUserDTO adminUserDTO) throws URISyntaxException {
+        log.debug("REST request to save User : {}", adminUserDTO);
 
-        if (userDTO.getId() != null) {
+        if (adminUserDTO.getId() != null) {
             throw new BadRequestAlertException("A new user cannot already have an ID", "userManagement", "idexists");
             // Lowercase the user login before comparing with database
-        } else if (userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).isPresent()) {
+        } else if (userRepository.findOneByLogin(adminUserDTO.getLogin().toLowerCase()).isPresent()) {
             throw new LoginAlreadyUsedException();
-        } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
+        } else if (userRepository.findOneByEmailIgnoreCase(adminUserDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
         } else {
-            User newUser = userService.createUser(userDTO);
+            User newUser = userService.createUser(adminUserDTO);
+            UserDTO newUserDTO = userMapper.userToUserDTO(newUser);
+            CompanyDTO companyDTO = companyService.findOne(Long.parseLong(adminUserDTO.getCompany())).get();
+            ApplicationUserDTO applicationUserDTO = new ApplicationUserDTO();
+            applicationUserDTO.setInternalUser(newUserDTO);
+            applicationUserDTO.setCompany(companyDTO);
+            applicationUserService.save(applicationUserDTO);
             mailService.sendCreationEmail(newUser);
             return ResponseEntity
                 .created(new URI("/api/admin/users/" + newUser.getLogin()))
