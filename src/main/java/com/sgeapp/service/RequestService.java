@@ -1,6 +1,7 @@
 package com.sgeapp.service;
 
 import com.sgeapp.service.dto.RequestDTO;
+import com.sgeapp.service.dto.RequestTotalsDto;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,4 +46,8 @@ public interface RequestService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    RequestTotalsDto calculateRequestTotals(Long requestId);
+
+    Optional<RequestDTO> findByCampaignAndOwner(Long campaignId, Long ownerId);
 }

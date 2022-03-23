@@ -2,6 +2,7 @@ package com.sgeapp.service.impl;
 
 import com.sgeapp.domain.ApplicationUser;
 import com.sgeapp.repository.ApplicationUserRepository;
+import com.sgeapp.security.SecurityUtils;
 import com.sgeapp.service.ApplicationUserService;
 import com.sgeapp.service.dto.ApplicationUserDTO;
 import com.sgeapp.service.mapper.ApplicationUserMapper;
@@ -82,5 +83,10 @@ public class ApplicationUserServiceImpl implements ApplicationUserService {
     @Override
     public Optional<ApplicationUserDTO> findByUserLogin(String userLogin) {
         return applicationUserRepository.findByUserLogin(userLogin).map(applicationUserMapper::toDto);
+    }
+
+    @Override
+    public Optional<ApplicationUserDTO> getCurrentApplicationUser() {
+        return findByUserLogin(SecurityUtils.getCurrentUserLogin().get());
     }
 }

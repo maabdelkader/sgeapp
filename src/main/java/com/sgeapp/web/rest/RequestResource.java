@@ -1,7 +1,11 @@
 package com.sgeapp.web.rest;
 
+import com.sgeapp.domain.enumeration.RequestStatus;
 import com.sgeapp.repository.RequestRepository;
+import com.sgeapp.security.AuthoritiesConstants;
+import com.sgeapp.service.ApplicationUserService;
 import com.sgeapp.service.RequestService;
+import com.sgeapp.service.dto.ApplicationUserDTO;
 import com.sgeapp.service.dto.RequestDTO;
 import com.sgeapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -13,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -35,9 +40,16 @@ public class RequestResource {
 
     private final RequestRepository requestRepository;
 
-    public RequestResource(RequestService requestService, RequestRepository requestRepository) {
+    private final ApplicationUserService applicationUserService;
+
+    public RequestResource(
+        RequestService requestService,
+        RequestRepository requestRepository,
+        ApplicationUserService applicationUserService
+    ) {
         this.requestService = requestService;
         this.requestRepository = requestRepository;
+        this.applicationUserService = applicationUserService;
     }
 
     /**
@@ -48,11 +60,22 @@ public class RequestResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/requests")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.CMCAS + "\")")
     public ResponseEntity<RequestDTO> createRequest(@RequestBody RequestDTO requestDTO) throws URISyntaxException {
         log.debug("REST request to save Request : {}", requestDTO);
         if (requestDTO.getId() != null) {
             throw new BadRequestAlertException("A new request cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        ApplicationUserDTO currentUser = applicationUserService.getCurrentApplicationUser().get();
+        Optional<RequestDTO> optionalRequestDTO = requestService.findByCampaignAndOwner(
+            requestDTO.getCompaign().getId(),
+            currentUser.getId()
+        );
+        if (optionalRequestDTO.isPresent()) {
+            throw new BadRequestAlertException("A request already exists for this campaign", ENTITY_NAME, "idexists");
+        }
+        requestDTO.setOwner(currentUser);
+        requestDTO.setStatus(RequestStatus.CREATED);
         RequestDTO result = requestService.save(requestDTO);
         return ResponseEntity
             .created(new URI("/api/requests/" + result.getId()))

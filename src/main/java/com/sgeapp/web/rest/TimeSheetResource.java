@@ -1,7 +1,14 @@
 package com.sgeapp.web.rest;
 
+import com.sgeapp.domain.SocialOrganization;
+import com.sgeapp.domain.enumeration.TimeSheetStatus;
 import com.sgeapp.repository.TimeSheetRepository;
+import com.sgeapp.security.AuthoritiesConstants;
+import com.sgeapp.service.RequestService;
 import com.sgeapp.service.TimeSheetService;
+import com.sgeapp.service.dto.RequestDTO;
+import com.sgeapp.service.dto.RequestTotalsDto;
+import com.sgeapp.service.dto.SocialOrganizationDTO;
 import com.sgeapp.service.dto.TimeSheetDTO;
 import com.sgeapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -13,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -35,9 +43,12 @@ public class TimeSheetResource {
 
     private final TimeSheetRepository timeSheetRepository;
 
-    public TimeSheetResource(TimeSheetService timeSheetService, TimeSheetRepository timeSheetRepository) {
+    private final RequestService requestService;
+
+    public TimeSheetResource(TimeSheetService timeSheetService, TimeSheetRepository timeSheetRepository, RequestService requestService) {
         this.timeSheetService = timeSheetService;
         this.timeSheetRepository = timeSheetRepository;
+        this.requestService = requestService;
     }
 
     /**
@@ -48,11 +59,14 @@ public class TimeSheetResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/time-sheets")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.CMCAS + "\")")
     public ResponseEntity<TimeSheetDTO> createTimeSheet(@RequestBody TimeSheetDTO timeSheetDTO) throws URISyntaxException {
         log.debug("REST request to save TimeSheet : {}", timeSheetDTO);
         if (timeSheetDTO.getId() != null) {
             throw new BadRequestAlertException("A new timeSheet cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        validateContingentForNewTimeSheet(timeSheetDTO);
+        timeSheetDTO.setStatus(TimeSheetStatus.CREATED);
         TimeSheetDTO result = timeSheetService.save(timeSheetDTO);
         return ResponseEntity
             .created(new URI("/api/time-sheets/" + result.getId()))
@@ -168,5 +182,31 @@ public class TimeSheetResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    private void validateContingentForNewTimeSheet(TimeSheetDTO newTimeSheetDTO) {
+        RequestDTO requestDTO = requestService.findOne(newTimeSheetDTO.getRequest().getId()).get();
+        if (requestDTO.getOwner() != null && requestDTO.getOwner().getCompany() != null) {
+            SocialOrganizationDTO socialOrganization = requestDTO.getOwner().getCompany().getSocialOrganization();
+            RequestTotalsDto requestTotalsDto = requestService.calculateRequestTotals(newTimeSheetDTO.getRequest().getId());
+            if (newTimeSheetDTO.getNbHoursAdmin() != null) {
+                int newTotalAdmin = newTimeSheetDTO.getNbHoursAdmin() + requestTotalsDto.getTotalAdmin();
+                if (newTotalAdmin > socialOrganization.getAdminQuota()) {
+                    throw new BadRequestAlertException("Exceeding quota admin", ENTITY_NAME, "exceedquota");
+                }
+            }
+            if (newTimeSheetDTO.getNbHoursProximity() != null) {
+                int newTotalProximity = newTimeSheetDTO.getNbHoursProximity() + requestTotalsDto.getTotalProximity();
+                if (newTotalProximity > socialOrganization.getProximityQuota()) {
+                    throw new BadRequestAlertException("Exceeding quota proximity", ENTITY_NAME, "exceedquota");
+                }
+            }
+            if (newTimeSheetDTO.getNbHoursCommision() != null) {
+                int newTotalCommission = newTimeSheetDTO.getNbHoursCommision() + requestTotalsDto.getTotalCommission();
+                if (newTotalCommission > socialOrganization.getCommissionQuota()) {
+                    throw new BadRequestAlertException("Exceeding quota commission", ENTITY_NAME, "exceedquota");
+                }
+            }
+        }
     }
 }

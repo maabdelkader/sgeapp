@@ -3,8 +3,12 @@ package com.sgeapp.service.impl;
 import com.sgeapp.domain.Request;
 import com.sgeapp.repository.RequestRepository;
 import com.sgeapp.service.RequestService;
+import com.sgeapp.service.TimeSheetService;
 import com.sgeapp.service.dto.RequestDTO;
+import com.sgeapp.service.dto.RequestTotalsDto;
+import com.sgeapp.service.dto.TimeSheetDTO;
 import com.sgeapp.service.mapper.RequestMapper;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 /**
  * Service Implementation for managing {@link Request}.
@@ -27,9 +32,12 @@ public class RequestServiceImpl implements RequestService {
 
     private final RequestMapper requestMapper;
 
-    public RequestServiceImpl(RequestRepository requestRepository, RequestMapper requestMapper) {
+    private final TimeSheetService timeSheetService;
+
+    public RequestServiceImpl(RequestRepository requestRepository, RequestMapper requestMapper, TimeSheetService timeSheetService) {
         this.requestRepository = requestRepository;
         this.requestMapper = requestMapper;
+        this.timeSheetService = timeSheetService;
     }
 
     @Override
@@ -73,5 +81,37 @@ public class RequestServiceImpl implements RequestService {
     public void delete(Long id) {
         log.debug("Request to delete Request : {}", id);
         requestRepository.deleteById(id);
+    }
+
+    @Override
+    public RequestTotalsDto calculateRequestTotals(Long requestId) {
+        List<TimeSheetDTO> timeSheetDTOList = timeSheetService.findAllByRequestId(requestId);
+        RequestTotalsDto result = new RequestTotalsDto();
+        result.setRequestId(requestId);
+        if (!CollectionUtils.isEmpty(timeSheetDTOList)) {
+            int totalAdmin = 0;
+            int totalProximity = 0;
+            int totalCommission = 0;
+            for (TimeSheetDTO timeSheetDTO : timeSheetDTOList) {
+                if (timeSheetDTO.getNbHoursCommision() != null) {
+                    totalCommission += timeSheetDTO.getNbHoursCommision();
+                }
+                if (timeSheetDTO.getNbHoursAdmin() != null) {
+                    totalAdmin += timeSheetDTO.getNbHoursAdmin();
+                }
+                if (timeSheetDTO.getNbHoursProximity() != null) {
+                    totalProximity += timeSheetDTO.getNbHoursProximity();
+                }
+            }
+            result.setTotalAdmin(totalAdmin);
+            result.setTotalCommission(totalCommission);
+            result.setTotalProximity(totalProximity);
+        }
+        return result;
+    }
+
+    @Override
+    public Optional<RequestDTO> findByCampaignAndOwner(Long campaignId, Long ownerId) {
+        return requestRepository.findByCampaignAndOwner(campaignId, ownerId).map(requestMapper::toDto);
     }
 }
