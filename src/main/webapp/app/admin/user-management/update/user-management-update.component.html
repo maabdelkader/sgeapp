@@ -86,7 +86,7 @@
         <div class="mb-3">
           <label>Company</label>
           <select class="form-select" formControlName="company">
-            <option *ngFor="let company of companies">{{ company.id }}</option>
+            <option *ngFor="let company of companies" [value]="company.id">{{ company.name }}</option>
           </select>
         </div>
 
