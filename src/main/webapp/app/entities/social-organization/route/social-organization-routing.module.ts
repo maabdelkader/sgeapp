@@ -14,7 +14,7 @@ const socialOrganizationRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: ':id/view',
+    path: ':socialOrgId/view',
     component: SocialOrganizationDetailComponent,
     resolve: {
       socialOrganization: SocialOrganizationRoutingResolveService,
@@ -30,7 +30,7 @@ const socialOrganizationRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: ':id/edit',
+    path: ':socialOrgId/edit',
     component: SocialOrganizationUpdateComponent,
     resolve: {
       socialOrganization: SocialOrganizationRoutingResolveService,

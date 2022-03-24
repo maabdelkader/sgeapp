@@ -1,8 +1,12 @@
 package com.sgeapp.web.rest;
 
+import com.sgeapp.domain.enumeration.CompanyType;
 import com.sgeapp.repository.CompanyRepository;
+import com.sgeapp.security.AuthoritiesConstants;
 import com.sgeapp.service.CompanyService;
+import com.sgeapp.service.SocialOrganizationService;
 import com.sgeapp.service.dto.CompanyDTO;
+import com.sgeapp.service.dto.SocialOrganizationDTO;
 import com.sgeapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -35,9 +40,16 @@ public class CompanyResource {
 
     private final CompanyRepository companyRepository;
 
-    public CompanyResource(CompanyService companyService, CompanyRepository companyRepository) {
+    private final SocialOrganizationService socialOrganizationService;
+
+    public CompanyResource(
+        CompanyService companyService,
+        CompanyRepository companyRepository,
+        SocialOrganizationService socialOrganizationService
+    ) {
         this.companyService = companyService;
         this.companyRepository = companyRepository;
+        this.socialOrganizationService = socialOrganizationService;
     }
 
     /**
@@ -48,10 +60,20 @@ public class CompanyResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/companies")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<CompanyDTO> createCompany(@RequestBody CompanyDTO companyDTO) throws URISyntaxException {
         log.debug("REST request to save Company : {}", companyDTO);
         if (companyDTO.getId() != null) {
             throw new BadRequestAlertException("A new company cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        if (CompanyType.CMCAS.equals(companyDTO.getCompanyType())) {
+            if (companyDTO.getSocialOrganization() == null) {
+                throw new BadRequestAlertException("Social Organization should not be null for CMCAS company", ENTITY_NAME, "idexists");
+            }
+            SocialOrganizationDTO socialOrganizationDTO = socialOrganizationService.save(companyDTO.getSocialOrganization());
+            companyDTO.setSocialOrganization(socialOrganizationDTO);
+        } else {
+            companyDTO.setSocialOrganization(null);
         }
         CompanyDTO result = companyService.save(companyDTO);
         return ResponseEntity

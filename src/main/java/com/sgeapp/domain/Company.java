@@ -32,7 +32,7 @@ public class Company implements Serializable {
     @Column(name = "company_type")
     private CompanyType companyType;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(unique = true)
     private SocialOrganization socialOrganization;
 
