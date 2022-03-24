@@ -1,12 +1,16 @@
 package com.sgeapp.web.rest;
 
 import com.sgeapp.domain.enumeration.RequestStatus;
+import com.sgeapp.domain.enumeration.TimeSheetStatus;
 import com.sgeapp.repository.RequestRepository;
+import com.sgeapp.repository.TimeSheetRepository;
 import com.sgeapp.security.AuthoritiesConstants;
 import com.sgeapp.service.ApplicationUserService;
 import com.sgeapp.service.RequestService;
+import com.sgeapp.service.TimeSheetService;
 import com.sgeapp.service.dto.ApplicationUserDTO;
 import com.sgeapp.service.dto.RequestDTO;
+import com.sgeapp.service.dto.TimeSheetDTO;
 import com.sgeapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,14 +46,18 @@ public class RequestResource {
 
     private final ApplicationUserService applicationUserService;
 
+    private final TimeSheetService timeSheetService;
+
     public RequestResource(
         RequestService requestService,
         RequestRepository requestRepository,
-        ApplicationUserService applicationUserService
+        ApplicationUserService applicationUserService,
+        TimeSheetService timeSheetService
     ) {
         this.requestService = requestService;
         this.requestRepository = requestRepository;
         this.applicationUserService = applicationUserService;
+        this.timeSheetService = timeSheetService;
     }
 
     /**
@@ -151,6 +159,63 @@ public class RequestResource {
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, requestDTO.getId().toString())
         );
+    }
+
+    @PatchMapping("/request/validation/cmcas/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.CMCAS + "\")")
+    public ResponseEntity<RequestDTO> validateRequestByCMCAS(@PathVariable(value = "id", required = false) final Long id) {
+        Optional<RequestDTO> requestDTOOptional = requestService.findOne(id);
+        if (!requestDTOOptional.isPresent()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        RequestDTO requestDTO = requestDTOOptional.get();
+        if (!RequestStatus.CREATED.equals(requestDTO.getStatus())) {
+            throw new BadRequestAlertException("Request not  ready for validation", ENTITY_NAME, "badstatus");
+        }
+        RequestDTO result = updateRequestAndTimeSheetsStatus(
+            requestDTO,
+            RequestStatus.SGE_VALIDATION_PENDING,
+            TimeSheetStatus.SGE_VALIDATION_PENDING
+        );
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, requestDTO.getId().toString()))
+            .body(result);
+    }
+
+    @PatchMapping("/request/validation/sge/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<RequestDTO> validateRequestBySGE(@PathVariable(value = "id", required = false) final Long id) {
+        Optional<RequestDTO> requestDTOOptional = requestService.findOne(id);
+        if (!requestDTOOptional.isPresent()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        RequestDTO requestDTO = requestDTOOptional.get();
+        if (!RequestStatus.SGE_VALIDATION_PENDING.equals(requestDTO.getStatus())) {
+            throw new BadRequestAlertException("Request not  ready for validation", ENTITY_NAME, "badstatus");
+        }
+        RequestDTO result = updateRequestAndTimeSheetsStatus(
+            requestDTO,
+            RequestStatus.EMPLOYER_VALIDATION_PENDING,
+            TimeSheetStatus.EMPLOYER_VALIDATION_PENDING
+        );
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, requestDTO.getId().toString()))
+            .body(result);
+    }
+
+    private RequestDTO updateRequestAndTimeSheetsStatus(
+        RequestDTO requestDTO,
+        RequestStatus newRequestStatus,
+        TimeSheetStatus newTimeSheetStatus
+    ) {
+        List<TimeSheetDTO> timeSheetDTOList = timeSheetService.findAllByRequestId(requestDTO.getId());
+        timeSheetDTOList.forEach(ts -> ts.setStatus(newTimeSheetStatus));
+        timeSheetService.saveAll(timeSheetDTOList);
+
+        requestDTO.setStatus(newRequestStatus);
+        return requestService.save(requestDTO);
     }
 
     /**

@@ -65,7 +65,7 @@ public class TimeSheetResource {
         if (timeSheetDTO.getId() != null) {
             throw new BadRequestAlertException("A new timeSheet cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        validateContingentForNewTimeSheet(timeSheetDTO);
+        validateContingentForNewTimeSheet(timeSheetDTO, null);
         timeSheetDTO.setStatus(TimeSheetStatus.CREATED);
         TimeSheetDTO result = timeSheetService.save(timeSheetDTO);
         return ResponseEntity
@@ -120,6 +120,7 @@ public class TimeSheetResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/time-sheets/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.CMCAS + "\") || hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<TimeSheetDTO> partialUpdateTimeSheet(
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody TimeSheetDTO timeSheetDTO
@@ -131,17 +132,37 @@ public class TimeSheetResource {
         if (!Objects.equals(id, timeSheetDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
-
-        if (!timeSheetRepository.existsById(id)) {
+        Optional<TimeSheetDTO> oldTimeSheetDTO = timeSheetService.findOne(id);
+        if (!oldTimeSheetDTO.isPresent()) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        validateContingentForNewTimeSheet(timeSheetDTO, oldTimeSheetDTO.get());
         Optional<TimeSheetDTO> result = timeSheetService.partialUpdate(timeSheetDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, timeSheetDTO.getId().toString())
         );
+    }
+
+    @PatchMapping("/time-sheets/validation/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.EMPLOYER + "\")")
+    public ResponseEntity<TimeSheetDTO> validateTimeSheetBySge(@PathVariable(value = "id", required = false) final Long id) {
+        Optional<TimeSheetDTO> timeSheetDTOOptional = timeSheetService.findOne(id);
+        if (!timeSheetDTOOptional.isPresent()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        TimeSheetDTO timeSheetDTO = timeSheetDTOOptional.get();
+        if (!TimeSheetStatus.EMPLOYER_VALIDATION_PENDING.equals(timeSheetDTO.getStatus())) {
+            throw new BadRequestAlertException("TimeSheet not  ready for validation", ENTITY_NAME, "badstatus");
+        }
+        timeSheetDTO.setStatus(TimeSheetStatus.VALIDATED);
+        TimeSheetDTO result = timeSheetService.save(timeSheetDTO);
+        // TODO - add request validation if all timesheet are validated
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, timeSheetDTO.getId().toString()))
+            .body(result);
     }
 
     /**
@@ -184,25 +205,34 @@ public class TimeSheetResource {
             .build();
     }
 
-    private void validateContingentForNewTimeSheet(TimeSheetDTO newTimeSheetDTO) {
+    private void validateContingentForNewTimeSheet(TimeSheetDTO newTimeSheetDTO, TimeSheetDTO oldTimeSheetDTO) {
         RequestDTO requestDTO = requestService.findOne(newTimeSheetDTO.getRequest().getId()).get();
         if (requestDTO.getOwner() != null && requestDTO.getOwner().getCompany() != null) {
             SocialOrganizationDTO socialOrganization = requestDTO.getOwner().getCompany().getSocialOrganization();
             RequestTotalsDto requestTotalsDto = requestService.calculateRequestTotals(newTimeSheetDTO.getRequest().getId());
+            int oldTimeSheetAdminHours, oldTimeSheetProximityHours, oldTimeSheetCommissionHours;
+            oldTimeSheetAdminHours = oldTimeSheetCommissionHours = oldTimeSheetProximityHours = 0;
+            if (oldTimeSheetDTO != null) {
+                oldTimeSheetAdminHours = Optional.ofNullable(oldTimeSheetDTO.getNbHoursAdmin()).orElse(0);
+                oldTimeSheetProximityHours = Optional.ofNullable(oldTimeSheetDTO.getNbHoursProximity()).orElse(0);
+                oldTimeSheetCommissionHours = Optional.ofNullable(oldTimeSheetDTO.getNbHoursCommision()).orElse(0);
+            }
             if (newTimeSheetDTO.getNbHoursAdmin() != null) {
-                int newTotalAdmin = newTimeSheetDTO.getNbHoursAdmin() + requestTotalsDto.getTotalAdmin();
+                int newTotalAdmin = newTimeSheetDTO.getNbHoursAdmin() + (requestTotalsDto.getTotalAdmin() - oldTimeSheetAdminHours);
                 if (newTotalAdmin > socialOrganization.getAdminQuota()) {
                     throw new BadRequestAlertException("Exceeding quota admin", ENTITY_NAME, "exceedquota");
                 }
             }
             if (newTimeSheetDTO.getNbHoursProximity() != null) {
-                int newTotalProximity = newTimeSheetDTO.getNbHoursProximity() + requestTotalsDto.getTotalProximity();
+                int newTotalProximity =
+                    newTimeSheetDTO.getNbHoursProximity() + (requestTotalsDto.getTotalProximity() - oldTimeSheetProximityHours);
                 if (newTotalProximity > socialOrganization.getProximityQuota()) {
                     throw new BadRequestAlertException("Exceeding quota proximity", ENTITY_NAME, "exceedquota");
                 }
             }
             if (newTimeSheetDTO.getNbHoursCommision() != null) {
-                int newTotalCommission = newTimeSheetDTO.getNbHoursCommision() + requestTotalsDto.getTotalCommission();
+                int newTotalCommission =
+                    newTimeSheetDTO.getNbHoursCommision() + (requestTotalsDto.getTotalCommission() - oldTimeSheetCommissionHours);
                 if (newTotalCommission > socialOrganization.getCommissionQuota()) {
                     throw new BadRequestAlertException("Exceeding quota commission", ENTITY_NAME, "exceedquota");
                 }

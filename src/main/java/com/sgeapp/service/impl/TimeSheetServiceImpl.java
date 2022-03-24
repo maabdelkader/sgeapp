@@ -83,4 +83,10 @@ public class TimeSheetServiceImpl implements TimeSheetService {
             .map(timeSheetMapper::toDto)
             .collect(Collectors.toCollection(LinkedList::new));
     }
+
+    @Override
+    public void saveAll(List<TimeSheetDTO> timeSheetDTOList) {
+        List<TimeSheet> timeSheetList = timeSheetDTOList.stream().map(timeSheetMapper::toEntity).collect(Collectors.toList());
+        timeSheetRepository.saveAll(timeSheetList);
+    }
 }

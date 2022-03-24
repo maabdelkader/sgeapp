@@ -47,4 +47,6 @@ public interface TimeSheetService {
     void delete(Long id);
 
     List<TimeSheetDTO> findAllByRequestId(Long requestId);
+
+    void saveAll(List<TimeSheetDTO> timeSheetDTOList);
 }
