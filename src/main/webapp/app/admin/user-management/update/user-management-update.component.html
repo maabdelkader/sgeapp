@@ -84,6 +84,13 @@
         </div>
 
         <div class="mb-3">
+          <label>Company</label>
+          <select class="form-select" formControlName="company">
+            <option *ngFor="let company of companies" [value]="company.id">{{ company.name }}</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
           <label>Profiles</label>
           <select class="form-control" multiple name="authority" formControlName="authorities">
             <option *ngFor="let authority of authorities" [value]="authority">{{ authority }}</option>

@@ -4,6 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 
 import { User } from '../user-management.model';
 import { UserManagementService } from '../service/user-management.service';
+import { CompanyService } from 'app/entities/company/service/company.service';
+import { HttpResponse } from '@angular/common/http';
+import { ICompany } from 'app/entities/company/company.model';
 
 @Component({
   selector: 'jhi-user-mgmt-update',
@@ -13,6 +16,7 @@ export class UserManagementUpdateComponent implements OnInit {
   user!: User;
   authorities: string[] = [];
   isSaving = false;
+  companies: ICompany[] = [];
 
   editForm = this.fb.group({
     id: [],
@@ -31,10 +35,23 @@ export class UserManagementUpdateComponent implements OnInit {
     activated: [],
     langKey: [],
     authorities: [],
+    company: ['', [Validators.required]],
   });
 
-  constructor(private userService: UserManagementService, private route: ActivatedRoute, private fb: FormBuilder) {}
+  constructor(
+    private companyService: CompanyService,
+    private userService: UserManagementService,
+    private route: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
+  loadCompanies(): void {
+    this.companyService.query().subscribe({
+      next: (res: HttpResponse<ICompany[]>) => {
+        this.companies = res.body ?? [];
+      },
+    });
+  }
   ngOnInit(): void {
     this.route.data.subscribe(({ user }) => {
       if (user) {
@@ -46,6 +63,7 @@ export class UserManagementUpdateComponent implements OnInit {
       }
     });
     this.userService.authorities().subscribe(authorities => (this.authorities = authorities));
+    this.loadCompanies();
   }
 
   previousState(): void {
@@ -90,6 +108,7 @@ export class UserManagementUpdateComponent implements OnInit {
     user.activated = this.editForm.get(['activated'])!.value;
     user.langKey = this.editForm.get(['langKey'])!.value;
     user.authorities = this.editForm.get(['authorities'])!.value;
+    user.company = this.editForm.get(['company'])!.value;
   }
 
   private onSaveSuccess(): void {

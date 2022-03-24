@@ -14,6 +14,8 @@ public class ApplicationUserDTO implements Serializable {
 
     private CompanyDTO company;
 
+    public ApplicationUserDTO() {}
+
     public Long getId() {
         return id;
     }
