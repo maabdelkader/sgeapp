@@ -12,7 +12,7 @@ export class SocialOrganizationRoutingResolveService implements Resolve<ISocialO
   constructor(protected service: SocialOrganizationService, protected router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<ISocialOrganization> | Observable<never> {
-    const id = route.params['id'];
+    const id = route.params['socialOrgId'];
     if (id) {
       return this.service.find(id).pipe(
         mergeMap((socialOrganization: HttpResponse<SocialOrganization>) => {

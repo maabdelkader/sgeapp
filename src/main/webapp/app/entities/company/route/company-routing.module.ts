@@ -6,6 +6,7 @@ import { CompanyComponent } from '../list/company.component';
 import { CompanyDetailComponent } from '../detail/company-detail.component';
 import { CompanyUpdateComponent } from '../update/company-update.component';
 import { CompanyRoutingResolveService } from './company-routing-resolve.service';
+import { SocialOrganizationRoutingResolveService } from 'app/entities/social-organization/route/social-organization-routing-resolve.service';
 
 const companyRoute: Routes = [
   {
@@ -26,6 +27,15 @@ const companyRoute: Routes = [
     component: CompanyUpdateComponent,
     resolve: {
       company: CompanyRoutingResolveService,
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: ':id/:socialOrgId/edit',
+    component: CompanyUpdateComponent,
+    resolve: {
+      company: CompanyRoutingResolveService,
+      socialOrganization: SocialOrganizationRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },

@@ -66,6 +66,18 @@
               </button>
 
               <button
+                *ngIf="company.socialOrganization"
+                type="submit"
+                [routerLink]="['/company', company.id, company.socialOrganization?.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button
+                *ngIf="!company.socialOrganization"
                 type="submit"
                 [routerLink]="['/company', company.id, 'edit']"
                 class="btn btn-primary btn-sm"

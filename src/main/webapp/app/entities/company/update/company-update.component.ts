@@ -21,12 +21,21 @@ export class CompanyUpdateComponent implements OnInit {
 
   socialOrganizationsCollection: ISocialOrganization[] = [];
 
+  socialOragnisationForm = this.fb.group({
+    id: [],
+    name: [],
+    adminQuota: [],
+    commissionQuota: [],
+    proximityQuota: [],
+    numberOfAdmins: [],
+  });
+
   editForm = this.fb.group({
     id: [],
     name: [],
     raisonSocial: [],
     companyType: [],
-    socialOrganization: [],
+    socialOrganization: this.socialOragnisationForm,
   });
 
   constructor(
@@ -37,8 +46,8 @@ export class CompanyUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ company }) => {
-      this.updateForm(company);
+    this.activatedRoute.data.subscribe(({ company, socialOrganization }) => {
+      this.updateForm(company, socialOrganization);
 
       this.loadRelationshipsOptions();
     });
@@ -62,6 +71,14 @@ export class CompanyUpdateComponent implements OnInit {
     return item.id!;
   }
 
+  isCMCAS(): boolean {
+    return this.editForm.get(['companyType'])!.value === CompanyType.CMCAS;
+  }
+
+  resetSocialOrgForm(): void {
+    this.socialOragnisationForm.reset();
+  }
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ICompany>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: () => this.onSaveSuccess(),
@@ -81,13 +98,13 @@ export class CompanyUpdateComponent implements OnInit {
     this.isSaving = false;
   }
 
-  protected updateForm(company: ICompany): void {
+  protected updateForm(company: ICompany, socialOrganization: ISocialOrganization): void {
     this.editForm.patchValue({
       id: company.id,
       name: company.name,
       raisonSocial: company.raisonSocial,
       companyType: company.companyType,
-      socialOrganization: company.socialOrganization,
+      socialOrganization: socialOrganization,
     });
 
     this.socialOrganizationsCollection = this.socialOrganizationService.addSocialOrganizationToCollectionIfMissing(
