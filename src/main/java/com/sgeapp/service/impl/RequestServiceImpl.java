@@ -114,4 +114,9 @@ public class RequestServiceImpl implements RequestService {
     public Optional<RequestDTO> findByCampaignAndOwner(Long campaignId, Long ownerId) {
         return requestRepository.findByCampaignAndOwner(campaignId, ownerId).map(requestMapper::toDto);
     }
+
+    @Override
+    public List<RequestDTO> findAllByOwnerId(Long ownerId) {
+        return requestRepository.findAllByOwnerId(ownerId).stream().map(requestMapper::toDto).collect(Collectors.toList());
+    }
 }

@@ -171,8 +171,11 @@ public class TimeSheetResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of timeSheets in body.
      */
     @GetMapping("/time-sheets")
-    public List<TimeSheetDTO> getAllTimeSheets() {
+    public List<TimeSheetDTO> getAllTimeSheets(@RequestParam(value = "requestId", required = false) Long requestId) {
         log.debug("REST request to get all TimeSheets");
+        if (requestId != null) {
+            return timeSheetService.findAllByRequestId(requestId);
+        }
         return timeSheetService.findAll();
     }
 

@@ -50,4 +50,6 @@ public interface RequestService {
     RequestTotalsDto calculateRequestTotals(Long requestId);
 
     Optional<RequestDTO> findByCampaignAndOwner(Long campaignId, Long ownerId);
+
+    List<RequestDTO> findAllByOwnerId(Long ownerId);
 }

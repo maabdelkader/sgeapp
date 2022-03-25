@@ -224,8 +224,11 @@ public class RequestResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requests in body.
      */
     @GetMapping("/requests")
-    public List<RequestDTO> getAllRequests() {
+    public List<RequestDTO> getAllRequests(@RequestParam(value = "userId", required = false) Long userId) {
         log.debug("REST request to get all Requests");
+        if (userId != null) {
+            requestService.findAllByOwnerId(userId);
+        }
         return requestService.findAll();
     }
 
