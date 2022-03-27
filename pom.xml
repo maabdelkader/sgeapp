@@ -582,7 +582,8 @@
                                 <JHIPSTER_SLEEP>0</JHIPSTER_SLEEP>
                             </environment>
                             <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
-                            <user>1000</user>
+                            <!-- <user>1000</user> -->
+                            <workingDirectory>/home/sge</workingDirectory>
                         </container>
                         <extraDirectories>
                             <paths>src/main/docker/jib</paths>
