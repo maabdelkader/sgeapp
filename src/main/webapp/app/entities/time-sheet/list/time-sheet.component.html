@@ -1,11 +1,11 @@
 <div>
   <h2 id="page-heading" data-cy="TimeSheetHeading">
-    <span>Time Sheets</span>
+    <span>Liste des entrées</span>
 
     <div class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
+        <span>Refresher</span>
       </button>
 
       <button
@@ -15,7 +15,7 @@
         [routerLink]="['/time-sheet/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Time Sheet </span>
+        <span> Créer une nouvelle feuille</span>
       </button>
     </div>
   </h2>
@@ -33,29 +33,29 @@
       <thead>
         <tr>
           <th scope="col"><span>ID</span></th>
-          <th scope="col"><span>Employee Civility</span></th>
-          <th scope="col"><span>Employee First Name</span></th>
-          <th scope="col"><span>Employee Last Name</span></th>
-          <th scope="col"><span>Registry Number</span></th>
-          <th scope="col"><span>Date From</span></th>
-          <th scope="col"><span>Date To</span></th>
+          <th scope="col"><span>Civilité</span></th>
+          <th scope="col"><span>Prenom</span></th>
+          <th scope="col"><span>Nom</span></th>
+          <th scope="col"><span>Nombre d'enregistrement</span></th>
+          <th scope="col"><span>Date d'effet</span></th>
+          <th scope="col"><span>Date de fin</span></th>
           <th scope="col"><span>Direction</span></th>
           <th scope="col"><span>Division</span></th>
           <th scope="col"><span>Um</span></th>
           <th scope="col"><span>Status</span></th>
-          <th scope="col"><span>Ccas</span></th>
-          <th scope="col"><span>Nb Hours Ccas</span></th>
-          <th scope="col"><span>Coordinating Committee</span></th>
-          <th scope="col"><span>Nb Hours Cdc</span></th>
+          <th scope="col"><span>CCAS</span></th>
+          <th scope="col"><span>Nb Hours CCAS</span></th>
+          <th scope="col"><span>Comité de coordination</span></th>
+          <th scope="col"><span>Nb Hours CDC</span></th>
           <th scope="col"><span>Nb Hours Admin</span></th>
-          <th scope="col"><span>Nb Hours Pot Fd Cfdt</span></th>
-          <th scope="col"><span>Nb Hours Pot Fd Cgt</span></th>
-          <th scope="col"><span>Nb Hours Pot Fd Fo</span></th>
-          <th scope="col"><span>Nb Hours Pot Fd Cfe Cgc</span></th>
-          <th scope="col"><span>Commission Type</span></th>
+          <th scope="col"><span>Nb Hours Pot FD CFDT</span></th>
+          <th scope="col"><span>Nb Hours Pot FD CGT</span></th>
+          <th scope="col"><span>Nb Hours Pot FD FO</span></th>
+          <th scope="col"><span>Nb Hours Pot FD CFE CGC</span></th>
+          <th scope="col"><span>Type de commission</span></th>
           <th scope="col"><span>Nb Hours Commision</span></th>
-          <th scope="col"><span>Proximity Type</span></th>
-          <th scope="col"><span>Nb Hours Proximity</span></th>
+          <th scope="col"><span>Type de proximité</span></th>
+          <th scope="col"><span>Nb Hours proximité</span></th>
           <th scope="col"><span>Request</span></th>
           <th scope="col"><span>Company</span></th>
           <th scope="col"></th>

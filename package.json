@@ -91,6 +91,8 @@
     "ng-zorro-antd": "13.1.1",
     "ngx-infinite-scroll": "10.0.1",
     "ngx-webstorage": "9.0.0",
+    "primeicons": "^5.0.0",
+    "primeng": "^13.3.0",
     "rxjs": "7.5.4",
     "swagger-ui-dist": "4.5.2",
     "tslib": "2.3.1",

@@ -1,9 +1,10 @@
 <nav data-cy="navbar" class="navbar navbar-dark navbar-expand-md bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand logo" routerLink="/" (click)="collapseNavbar()">
+      <!-- <img src="../../../content/images/sge-logo.png" class="logo-img" alt=""> -->
       <span class="logo-img"></span>
-      <span class="navbar-title">Sgeapp</span>
-      <span class="navbar-version">{{ version }}</span>
+      <!-- <span class="navbar-title">SGE</span> -->
+      <!-- <span class="navbar-version">{{ version }}</span> -->
     </a>
     <a
       class="navbar-toggler d-lg-none"
@@ -23,7 +24,7 @@
           <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
             <span>
               <fa-icon icon="home"></fa-icon>
-              <span>Home</span>
+              <span>Acceuil</span>
             </span>
           </a>
         </li>
@@ -112,7 +113,7 @@
                 (click)="collapseNavbar()"
               >
                 <fa-icon icon="asterisk" [fixedWidth]="true"></fa-icon>
-                <span>Time Sheet</span>
+                <span>Feuilles de temps</span>
               </a>
             </li>
             <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
@@ -188,7 +189,7 @@
           <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu" data-cy="accountMenu">
             <span *ngIf="!account?.imageUrl">
               <fa-icon icon="user"></fa-icon>
-              <span>Account</span>
+              <span>Compte</span>
             </span>
             <span *ngIf="account?.imageUrl">
               <img [src]="account!.imageUrl" class="profile-image rounded-circle" alt="Avatar" />
@@ -204,7 +205,7 @@
                 data-cy="settings"
               >
                 <fa-icon icon="wrench" [fixedWidth]="true"></fa-icon>
-                <span>Settings</span>
+                <span>Paramétres</span>
               </a>
             </li>
             <li *ngSwitchCase="true">
@@ -216,7 +217,7 @@
                 data-cy="passwordItem"
               >
                 <fa-icon icon="lock" [fixedWidth]="true"></fa-icon>
-                <span>Password</span>
+                <span>Mot de passe</span>
               </a>
             </li>
             <li *ngSwitchCase="true">
@@ -228,13 +229,13 @@
             <li *ngSwitchCase="true">
               <a class="dropdown-item" (click)="logout()" id="logout" data-cy="logout">
                 <fa-icon icon="sign-out-alt" [fixedWidth]="true"></fa-icon>
-                <span>Sign out</span>
+                <span>Déconnexion</span>
               </a>
             </li>
             <li *ngSwitchCase="false">
               <a class="dropdown-item" (click)="login()" id="login" data-cy="login">
                 <fa-icon icon="sign-in-alt" [fixedWidth]="true"></fa-icon>
-                <span>Sign in</span>
+                <span>Connexion</span>
               </a>
             </li>
             <li *ngSwitchCase="false">
@@ -246,7 +247,7 @@
                 data-cy="register"
               >
                 <fa-icon icon="user-plus" [fixedWidth]="true"></fa-icon>
-                <span>Register</span>
+                <span>Inscription</span>
               </a>
             </li>
           </ul>

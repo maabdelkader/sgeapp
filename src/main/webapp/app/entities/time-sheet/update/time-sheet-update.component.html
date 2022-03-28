@@ -1,312 +1,352 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-time-sheet-heading" data-cy="TimeSheetCreateUpdateHeading">Create or edit a Time Sheet</h2>
+    <p-card header="Créer une feuille de temps">
+      <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+        <div>
+          <jhi-alert-error></jhi-alert-error>
+          <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+          <div class="mb-3">
+            <p-panel header="Salaries" [toggleable]="true">
+              <div class="row mb-3">
+                <div class="col-4">
+                  <label class="form-label" for="field_employeeCivility">Civilité</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="employeeCivility"
+                    id="field_employeeCivility"
+                    data-cy="employeeCivility"
+                    formControlName="employeeCivility"
+                  />
+                </div>
+                <div class="col-4">
+                  <label class="form-label" for="field_employeeFirstName">Prenom</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="employeeFirstName"
+                    id="field_employeeFirstName"
+                    data-cy="employeeFirstName"
+                    formControlName="employeeFirstName"
+                  />
+                </div>
+                <div class="col-4">
+                  <label class="form-label" for="field_employeeLastName">Nom</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="employeeLastName"
+                    id="field_employeeLastName"
+                    data-cy="employeeLastName"
+                    formControlName="employeeLastName"
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-4">
+                  <label class="form-label" for="field_registryNumber">Nombre d'enregistrement</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="registryNumber"
+                    id="field_registryNumber"
+                    data-cy="registryNumber"
+                    formControlName="registryNumber"
+                  />
+                </div>
+                <div class="col-4">
+                  <label class="form-label" for="field_direction">Direction</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="direction"
+                    id="field_direction"
+                    data-cy="direction"
+                    formControlName="direction"
+                  />
+                </div>
+                <div class="col-4">
+                  <label class="form-label" for="field_division">Division</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="division"
+                    id="field_division"
+                    data-cy="division"
+                    formControlName="division"
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-3">
+                  <label class="form-label" for="field_um">Um</label>
+                  <input type="text" class="form-control" name="um" id="field_um" data-cy="um" formControlName="um" />
+                </div>
+                <!-- <div class="col-6">
+                  <label class="form-label" for="field_status">Status</label>
+                  <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let timeSheetStatus of timeSheetStatusValues" [value]="timeSheetStatus">timeSheetStatus
+                    </option>
+                  </select>
+                </div> -->
+              </div>
+            </p-panel>
+          </div>
+          <div class="mb-3">
+            <p-panel header="Organisme sociale" [toggleable]="true">
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label class="form-label" for="field_ccas">CCAS</label>
+                  <input type="text" class="form-control" name="ccas" id="field_ccas" data-cy="ccas" formControlName="ccas" />
+                </div>
 
-      <div>
-        <jhi-alert-error></jhi-alert-error>
+                <div class="col-6">
+                  <label class="form-label" for="field_nbHoursCcas">Nb Hours CCAS</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="nbHoursCcas"
+                    id="field_nbHoursCcas"
+                    data-cy="nbHoursCcas"
+                    formControlName="nbHoursCcas"
+                  />
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-6">
+                  <label class="form-label" for="field_coordinatingCommittee">Comité de coordination</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="coordinatingCommittee"
+                    id="field_coordinatingCommittee"
+                    data-cy="coordinatingCommittee"
+                    formControlName="coordinatingCommittee"
+                  />
+                </div>
+                <div class="col-6">
+                  <label class="form-label" for="field_nbHoursCdc">Nb Hours CDC</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="nbHoursCdc"
+                    id="field_nbHoursCdc"
+                    data-cy="nbHoursCdc"
+                    formControlName="nbHoursCdc"
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <span class="mb-2" style="size: 30px; font-weight: 600">Dates mandat</span>
+                <div class="col-6">
+                  <label class="form-label" for="field_dateFrom">Date d'effet</label>
+                  <div class="input-group">
+                    <input
+                      id="field_dateFrom"
+                      data-cy="dateFrom"
+                      type="text"
+                      class="form-control"
+                      name="dateFrom"
+                      ngbDatepicker
+                      #dateFromDp="ngbDatepicker"
+                      formControlName="dateFrom"
+                    />
+                    <button type="button" class="btn btn-secondary" (click)="dateFromDp.toggle()">
+                      <fa-icon icon="calendar-alt"></fa-icon>
+                    </button>
+                  </div>
+                </div>
 
-        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
-          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
-        </div>
+                <div class="col-6">
+                  <label class="form-label" for="field_dateTo">Date fin</label>
+                  <div class="input-group">
+                    <input
+                      id="field_dateTo"
+                      data-cy="dateTo"
+                      type="text"
+                      class="form-control"
+                      name="dateTo"
+                      ngbDatepicker
+                      #dateToDp="ngbDatepicker"
+                      formControlName="dateTo"
+                    />
+                    <button type="button" class="btn btn-secondary" (click)="dateToDp.toggle()">
+                      <fa-icon icon="calendar-alt"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </p-panel>
+          </div>
+          <div class="mb-3">
+            <p-panel header="Administrateurs" [toggleable]="true">
+              <div class="row mb-4">
+                <div class="col-4">
+                  <label class="form-label" for="field_nbHoursAdmin">Nb Hours Admin</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="nbHoursAdmin"
+                    id="field_nbHoursAdmin"
+                    data-cy="nbHoursAdmin"
+                    formControlName="nbHoursAdmin"
+                  />
+                </div>
+                <div class="col-4">
+                  <label class="form-label" for="field_nbHoursPotFdCfdt">Nb Hours Pot FD CFDT</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="nbHoursPotFdCfdt"
+                    id="field_nbHoursPotFdCfdt"
+                    data-cy="nbHoursPotFdCfdt"
+                    formControlName="nbHoursPotFdCfdt"
+                  />
+                </div>
+                <div class="col-4">
+                  <label class="form-label" for="field_nbHoursPotFdCgt">Nb Hours Pot FD CGT</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="nbHoursPotFdCgt"
+                    id="field_nbHoursPotFdCgt"
+                    data-cy="nbHoursPotFdCgt"
+                    formControlName="nbHoursPotFdCgt"
+                  />
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-4">
+                  <label class="form-label" for="field_nbHoursPotFdFo">Nb Hours Pot FD FO</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="nbHoursPotFdFo"
+                    id="field_nbHoursPotFdFo"
+                    data-cy="nbHoursPotFdFo"
+                    formControlName="nbHoursPotFdFo"
+                  />
+                </div>
+                <div class="col-4">
+                  <label class="form-label" for="field_nbHoursPotFdCfeCgc">Nb Hours Pot FD CFE CGC</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="nbHoursPotFdCfeCgc"
+                    id="field_nbHoursPotFdCfeCgc"
+                    data-cy="nbHoursPotFdCfeCgc"
+                    formControlName="nbHoursPotFdCfeCgc"
+                  />
+                </div>
+              </div>
+            </p-panel>
+          </div>
+          <div class="mb-3">
+            <p-panel header="Commisions/Proximités" [toggleable]="true">
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label class="form-label" for="field_commissionType">Type de commission</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="commissionType"
+                    id="field_commissionType"
+                    data-cy="commissionType"
+                    formControlName="commissionType"
+                  />
+                </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_employeeCivility">Employee Civility</label>
-          <input
-            type="text"
-            class="form-control"
-            name="employeeCivility"
-            id="field_employeeCivility"
-            data-cy="employeeCivility"
-            formControlName="employeeCivility"
-          />
-        </div>
+                <div class="col-6">
+                  <label class="form-label" for="field_nbHoursCommision">Nb Hours Commision</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="nbHoursCommision"
+                    id="field_nbHoursCommision"
+                    data-cy="nbHoursCommision"
+                    formControlName="nbHoursCommision"
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label class="form-label" for="field_proximityType">Type de proximité</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="proximityType"
+                    id="field_proximityType"
+                    data-cy="proximityType"
+                    formControlName="proximityType"
+                  />
+                </div>
+                <div class="col-6">
+                  <label class="form-label" for="field_nbHoursProximity">Nb Hours proximité</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="nbHoursProximity"
+                    id="field_nbHoursProximity"
+                    data-cy="nbHoursProximity"
+                    formControlName="nbHoursProximity"
+                  />
+                </div>
+              </div>
+            </p-panel>
+          </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_employeeFirstName">Employee First Name</label>
-          <input
-            type="text"
-            class="form-control"
-            name="employeeFirstName"
-            id="field_employeeFirstName"
-            data-cy="employeeFirstName"
-            formControlName="employeeFirstName"
-          />
-        </div>
+          <div class="mb-5">
+            <p-panel header="Autre" [toggleable]="true">
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label class="form-label" for="field_request">Request</label>
+                  <select class="form-control" id="field_request" data-cy="request" name="request" formControlName="request">
+                    <option [ngValue]="null"></option>
+                    <option
+                      [ngValue]="requestOption.id === editForm.get('request')!.value?.id ? editForm.get('request')!.value : requestOption"
+                      *ngFor="let requestOption of requestsSharedCollection; trackBy: trackRequestById"
+                    >
+                      {{ requestOption.id }}
+                    </option>
+                  </select>
+                </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_employeeLastName">Employee Last Name</label>
-          <input
-            type="text"
-            class="form-control"
-            name="employeeLastName"
-            id="field_employeeLastName"
-            data-cy="employeeLastName"
-            formControlName="employeeLastName"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_registryNumber">Registry Number</label>
-          <input
-            type="text"
-            class="form-control"
-            name="registryNumber"
-            id="field_registryNumber"
-            data-cy="registryNumber"
-            formControlName="registryNumber"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateFrom">Date From</label>
-          <div class="input-group">
-            <input
-              id="field_dateFrom"
-              data-cy="dateFrom"
-              type="text"
-              class="form-control"
-              name="dateFrom"
-              ngbDatepicker
-              #dateFromDp="ngbDatepicker"
-              formControlName="dateFrom"
-            />
-            <button type="button" class="btn btn-secondary" (click)="dateFromDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+                <div class="col-6">
+                  <label class="form-label" for="field_company">Company</label>
+                  <select class="form-control" id="field_company" data-cy="company" name="company" formControlName="company">
+                    <option [ngValue]="null"></option>
+                    <option
+                      [ngValue]="companyOption.id === editForm.get('company')!.value?.id ? editForm.get('company')!.value : companyOption"
+                      *ngFor="let companyOption of companiesSharedCollection; trackBy: trackCompanyById"
+                    >
+                      {{ companyOption.id }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </p-panel>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <label class="form-label" for="field_dateTo">Date To</label>
-          <div class="input-group">
-            <input
-              id="field_dateTo"
-              data-cy="dateTo"
-              type="text"
-              class="form-control"
-              name="dateTo"
-              ngbDatepicker
-              #dateToDp="ngbDatepicker"
-              formControlName="dateTo"
-            />
-            <button type="button" class="btn btn-secondary" (click)="dateToDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
-          </div>
+        <div>
+          <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+            <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+          </button>
+          <button
+            type="submit"
+            id="save-entity"
+            data-cy="entityCreateSaveButton"
+            [disabled]="editForm.invalid || isSaving"
+            class="btn btn-primary"
+          >
+            <fa-icon icon="save"></fa-icon>&nbsp;<span>Enregistrer</span>
+          </button>
         </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_direction">Direction</label>
-          <input type="text" class="form-control" name="direction" id="field_direction" data-cy="direction" formControlName="direction" />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_division">Division</label>
-          <input type="text" class="form-control" name="division" id="field_division" data-cy="division" formControlName="division" />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_um">Um</label>
-          <input type="text" class="form-control" name="um" id="field_um" data-cy="um" formControlName="um" />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_status">Status</label>
-          <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
-            <option [ngValue]="null"></option>
-            <option *ngFor="let timeSheetStatus of timeSheetStatusValues" [value]="timeSheetStatus">timeSheetStatus</option>
-          </select>
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_ccas">Ccas</label>
-          <input type="text" class="form-control" name="ccas" id="field_ccas" data-cy="ccas" formControlName="ccas" />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbHoursCcas">Nb Hours Ccas</label>
-          <input
-            type="number"
-            class="form-control"
-            name="nbHoursCcas"
-            id="field_nbHoursCcas"
-            data-cy="nbHoursCcas"
-            formControlName="nbHoursCcas"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_coordinatingCommittee">Coordinating Committee</label>
-          <input
-            type="text"
-            class="form-control"
-            name="coordinatingCommittee"
-            id="field_coordinatingCommittee"
-            data-cy="coordinatingCommittee"
-            formControlName="coordinatingCommittee"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbHoursCdc">Nb Hours Cdc</label>
-          <input
-            type="number"
-            class="form-control"
-            name="nbHoursCdc"
-            id="field_nbHoursCdc"
-            data-cy="nbHoursCdc"
-            formControlName="nbHoursCdc"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbHoursAdmin">Nb Hours Admin</label>
-          <input
-            type="number"
-            class="form-control"
-            name="nbHoursAdmin"
-            id="field_nbHoursAdmin"
-            data-cy="nbHoursAdmin"
-            formControlName="nbHoursAdmin"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbHoursPotFdCfdt">Nb Hours Pot Fd Cfdt</label>
-          <input
-            type="number"
-            class="form-control"
-            name="nbHoursPotFdCfdt"
-            id="field_nbHoursPotFdCfdt"
-            data-cy="nbHoursPotFdCfdt"
-            formControlName="nbHoursPotFdCfdt"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbHoursPotFdCgt">Nb Hours Pot Fd Cgt</label>
-          <input
-            type="number"
-            class="form-control"
-            name="nbHoursPotFdCgt"
-            id="field_nbHoursPotFdCgt"
-            data-cy="nbHoursPotFdCgt"
-            formControlName="nbHoursPotFdCgt"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbHoursPotFdFo">Nb Hours Pot Fd Fo</label>
-          <input
-            type="number"
-            class="form-control"
-            name="nbHoursPotFdFo"
-            id="field_nbHoursPotFdFo"
-            data-cy="nbHoursPotFdFo"
-            formControlName="nbHoursPotFdFo"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbHoursPotFdCfeCgc">Nb Hours Pot Fd Cfe Cgc</label>
-          <input
-            type="number"
-            class="form-control"
-            name="nbHoursPotFdCfeCgc"
-            id="field_nbHoursPotFdCfeCgc"
-            data-cy="nbHoursPotFdCfeCgc"
-            formControlName="nbHoursPotFdCfeCgc"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_commissionType">Commission Type</label>
-          <input
-            type="text"
-            class="form-control"
-            name="commissionType"
-            id="field_commissionType"
-            data-cy="commissionType"
-            formControlName="commissionType"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbHoursCommision">Nb Hours Commision</label>
-          <input
-            type="number"
-            class="form-control"
-            name="nbHoursCommision"
-            id="field_nbHoursCommision"
-            data-cy="nbHoursCommision"
-            formControlName="nbHoursCommision"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_proximityType">Proximity Type</label>
-          <input
-            type="text"
-            class="form-control"
-            name="proximityType"
-            id="field_proximityType"
-            data-cy="proximityType"
-            formControlName="proximityType"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_nbHoursProximity">Nb Hours Proximity</label>
-          <input
-            type="number"
-            class="form-control"
-            name="nbHoursProximity"
-            id="field_nbHoursProximity"
-            data-cy="nbHoursProximity"
-            formControlName="nbHoursProximity"
-          />
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_request">Request</label>
-          <select class="form-control" id="field_request" data-cy="request" name="request" formControlName="request">
-            <option [ngValue]="null"></option>
-            <option
-              [ngValue]="requestOption.id === editForm.get('request')!.value?.id ? editForm.get('request')!.value : requestOption"
-              *ngFor="let requestOption of requestsSharedCollection; trackBy: trackRequestById"
-            >
-              {{ requestOption.id }}
-            </option>
-          </select>
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_company">Company</label>
-          <select class="form-control" id="field_company" data-cy="company" name="company" formControlName="company">
-            <option [ngValue]="null"></option>
-            <option
-              [ngValue]="companyOption.id === editForm.get('company')!.value?.id ? editForm.get('company')!.value : companyOption"
-              *ngFor="let companyOption of companiesSharedCollection; trackBy: trackCompanyById"
-            >
-              {{ companyOption.id }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
-        </button>
-
-        <button
-          type="submit"
-          id="save-entity"
-          data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving"
-          class="btn btn-primary"
-        >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
-        </button>
-      </div>
-    </form>
+      </form>
+    </p-card>
   </div>
 </div>
