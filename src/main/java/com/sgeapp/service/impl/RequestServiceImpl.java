@@ -88,10 +88,10 @@ public class RequestServiceImpl implements RequestService {
         List<TimeSheetDTO> timeSheetDTOList = timeSheetService.findAllByRequestId(requestId);
         RequestTotalsDto result = new RequestTotalsDto();
         result.setRequestId(requestId);
+        int totalAdmin = 0;
+        int totalProximity = 0;
+        int totalCommission = 0;
         if (!CollectionUtils.isEmpty(timeSheetDTOList)) {
-            int totalAdmin = 0;
-            int totalProximity = 0;
-            int totalCommission = 0;
             for (TimeSheetDTO timeSheetDTO : timeSheetDTOList) {
                 if (timeSheetDTO.getNbHoursCommision() != null) {
                     totalCommission += timeSheetDTO.getNbHoursCommision();
@@ -103,10 +103,10 @@ public class RequestServiceImpl implements RequestService {
                     totalProximity += timeSheetDTO.getNbHoursProximity();
                 }
             }
-            result.setTotalAdmin(totalAdmin);
-            result.setTotalCommission(totalCommission);
-            result.setTotalProximity(totalProximity);
         }
+        result.setTotalAdmin(totalAdmin);
+        result.setTotalCommission(totalCommission);
+        result.setTotalProximity(totalProximity);
         return result;
     }
 
