@@ -12,6 +12,7 @@ import { ApplicationUserService } from 'app/entities/application-user/service/ap
 import { ICampaign } from 'app/entities/campaign/campaign.model';
 import { CampaignService } from 'app/entities/campaign/service/campaign.service';
 import { RequestStatus } from 'app/entities/enumerations/request-status.model';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'jhi-request-update',
@@ -20,6 +21,7 @@ import { RequestStatus } from 'app/entities/enumerations/request-status.model';
 export class RequestUpdateComponent implements OnInit {
   isSaving = false;
   requestStatusValues = Object.keys(RequestStatus);
+  currentUser: any;
 
   applicationUsersSharedCollection: IApplicationUser[] = [];
   campaignsSharedCollection: ICampaign[] = [];
@@ -36,7 +38,8 @@ export class RequestUpdateComponent implements OnInit {
     protected applicationUserService: ApplicationUserService,
     protected campaignService: CampaignService,
     protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
@@ -44,6 +47,10 @@ export class RequestUpdateComponent implements OnInit {
       this.updateForm(request);
 
       this.loadRelationshipsOptions();
+    });
+
+    this.accountService.getAuthenticationState().subscribe(data => {
+      this.currentUser = data;
     });
   }
 
@@ -54,6 +61,7 @@ export class RequestUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const request = this.createFromForm();
+    console.log('result', request);
     if (request.id !== undefined) {
       this.subscribeToSaveResponse(this.requestService.update(request));
     } else {
@@ -132,8 +140,8 @@ export class RequestUpdateComponent implements OnInit {
     return {
       ...new Request(),
       id: this.editForm.get(['id'])!.value,
-      status: this.editForm.get(['status'])!.value,
-      owner: this.editForm.get(['owner'])!.value,
+      status: RequestStatus.CREATED,
+      owner: this.currentUser,
       compaign: this.editForm.get(['compaign'])!.value,
     };
   }
