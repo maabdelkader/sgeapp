@@ -1,15 +1,10 @@
 package com.sgeapp.web.rest;
 
-import com.sgeapp.domain.SocialOrganization;
 import com.sgeapp.domain.enumeration.TimeSheetStatus;
 import com.sgeapp.repository.TimeSheetRepository;
 import com.sgeapp.security.AuthoritiesConstants;
-import com.sgeapp.service.RequestService;
-import com.sgeapp.service.TimeSheetService;
-import com.sgeapp.service.dto.RequestDTO;
-import com.sgeapp.service.dto.RequestTotalsDto;
-import com.sgeapp.service.dto.SocialOrganizationDTO;
-import com.sgeapp.service.dto.TimeSheetDTO;
+import com.sgeapp.service.*;
+import com.sgeapp.service.dto.*;
 import com.sgeapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -45,10 +40,26 @@ public class TimeSheetResource {
 
     private final RequestService requestService;
 
-    public TimeSheetResource(TimeSheetService timeSheetService, TimeSheetRepository timeSheetRepository, RequestService requestService) {
+    private final ApplicationUserService applicationUserService;
+
+    private final CompanyService companyService;
+
+    private final SocialOrganizationService socialOrganizationService;
+
+    public TimeSheetResource(
+        TimeSheetService timeSheetService,
+        TimeSheetRepository timeSheetRepository,
+        RequestService requestService,
+        ApplicationUserService applicationUserService,
+        CompanyService companyService,
+        SocialOrganizationService socialOrganizationService
+    ) {
         this.timeSheetService = timeSheetService;
         this.timeSheetRepository = timeSheetRepository;
         this.requestService = requestService;
+        this.applicationUserService = applicationUserService;
+        this.companyService = companyService;
+        this.socialOrganizationService = socialOrganizationService;
     }
 
     /**
@@ -210,8 +221,10 @@ public class TimeSheetResource {
 
     private void validateContingentForNewTimeSheet(TimeSheetDTO newTimeSheetDTO, TimeSheetDTO oldTimeSheetDTO) {
         RequestDTO requestDTO = requestService.findOne(newTimeSheetDTO.getRequest().getId()).get();
-        if (requestDTO.getOwner() != null && requestDTO.getOwner().getCompany() != null) {
-            SocialOrganizationDTO socialOrganization = requestDTO.getOwner().getCompany().getSocialOrganization();
+        ApplicationUserDTO currentUser = applicationUserService.findOne(requestDTO.getOwner().getId()).get();
+        CompanyDTO companyDTO = companyService.findOne(currentUser.getCompany().getId()).get();
+        SocialOrganizationDTO socialOrganization = socialOrganizationService.findOne(companyDTO.getSocialOrganization().getId()).get();
+        if (socialOrganization != null) {
             RequestTotalsDto requestTotalsDto = requestService.calculateRequestTotals(newTimeSheetDTO.getRequest().getId());
             int oldTimeSheetAdminHours, oldTimeSheetProximityHours, oldTimeSheetCommissionHours;
             oldTimeSheetAdminHours = oldTimeSheetCommissionHours = oldTimeSheetProximityHours = 0;
