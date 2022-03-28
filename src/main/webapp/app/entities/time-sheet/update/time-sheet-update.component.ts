@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
@@ -23,6 +23,7 @@ export class TimeSheetUpdateComponent implements OnInit {
 
   requestsSharedCollection: IRequest[] = [];
   companiesSharedCollection: ICompany[] = [];
+  requestId?: number;
 
   editForm = this.fb.group({
     id: [],
@@ -58,12 +59,15 @@ export class TimeSheetUpdateComponent implements OnInit {
     protected requestService: RequestService,
     protected companyService: CompanyService,
     protected activatedRoute: ActivatedRoute,
-    protected fb: FormBuilder
+    protected fb: FormBuilder,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe(({ timeSheet }) => {
-      this.updateForm(timeSheet);
+    this.activatedRoute.data.subscribe(({ timeSheet, request }) => {
+      this.requestId = request.id;
+      let timeSheetUpdated = { ...timeSheet, request };
+      this.updateForm(timeSheetUpdated);
 
       this.loadRelationshipsOptions();
     });
@@ -76,6 +80,7 @@ export class TimeSheetUpdateComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const timeSheet = this.createFromForm();
+    console.log(timeSheet);
     if (timeSheet.id !== undefined) {
       this.subscribeToSaveResponse(this.timeSheetService.update(timeSheet));
     } else {
@@ -99,7 +104,7 @@ export class TimeSheetUpdateComponent implements OnInit {
   }
 
   protected onSaveSuccess(): void {
-    this.previousState();
+    this.router.navigate(['/time-sheet']);
   }
 
   protected onSaveError(): void {
