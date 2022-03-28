@@ -6,6 +6,7 @@ import { TimeSheetComponent } from '../list/time-sheet.component';
 import { TimeSheetDetailComponent } from '../detail/time-sheet-detail.component';
 import { TimeSheetUpdateComponent } from '../update/time-sheet-update.component';
 import { TimeSheetRoutingResolveService } from './time-sheet-routing-resolve.service';
+import { RequestRoutingResolveService } from 'app/entities/request/route/request-routing-resolve.service';
 
 const timeSheetRoute: Routes = [
   {
@@ -22,10 +23,19 @@ const timeSheetRoute: Routes = [
     canActivate: [UserRouteAccessService],
   },
   {
-    path: 'new',
+    path: 'new/',
     component: TimeSheetUpdateComponent,
     resolve: {
       timeSheet: TimeSheetRoutingResolveService,
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: 'new/:request',
+    component: TimeSheetUpdateComponent,
+    resolve: {
+      timeSheet: TimeSheetRoutingResolveService,
+      request: RequestRoutingResolveService,
     },
     canActivate: [UserRouteAccessService],
   },

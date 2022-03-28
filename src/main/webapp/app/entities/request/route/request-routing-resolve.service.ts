@@ -13,8 +13,20 @@ export class RequestRoutingResolveService implements Resolve<IRequest> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<IRequest> | Observable<never> {
     const id = route.params['id'];
+    const requestId = route.params['request'];
     if (id) {
       return this.service.find(id).pipe(
+        mergeMap((request: HttpResponse<Request>) => {
+          if (request.body) {
+            return of(request.body);
+          } else {
+            this.router.navigate(['404']);
+            return EMPTY;
+          }
+        })
+      );
+    } else if (requestId) {
+      return this.service.find(requestId).pipe(
         mergeMap((request: HttpResponse<Request>) => {
           if (request.body) {
             return of(request.body);

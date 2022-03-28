@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
@@ -39,7 +39,8 @@ export class RequestUpdateComponent implements OnInit {
     protected campaignService: CampaignService,
     protected activatedRoute: ActivatedRoute,
     protected fb: FormBuilder,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -78,14 +79,12 @@ export class RequestUpdateComponent implements OnInit {
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IRequest>>): void {
-    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
-      error: () => this.onSaveError(),
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe(data => {
+      if (data.body) {
+        console.log('request saved', data);
+        this.router.navigate(['/time-sheet/new/', data.body?.id]);
+      }
     });
-  }
-
-  protected onSaveSuccess(): void {
-    this.previousState();
   }
 
   protected onSaveError(): void {
