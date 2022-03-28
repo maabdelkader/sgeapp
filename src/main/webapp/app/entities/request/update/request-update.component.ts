@@ -52,6 +52,7 @@ export class RequestUpdateComponent implements OnInit {
 
     this.accountService.getAuthenticationState().subscribe(data => {
       this.currentUser = data;
+      console.log(this.currentUser);
     });
   }
 
