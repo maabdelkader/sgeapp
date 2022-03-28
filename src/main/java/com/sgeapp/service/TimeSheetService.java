@@ -45,4 +45,8 @@ public interface TimeSheetService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    List<TimeSheetDTO> findAllByRequestId(Long requestId);
+
+    void saveAll(List<TimeSheetDTO> timeSheetDTOList);
 }

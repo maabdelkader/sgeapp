@@ -47,4 +47,6 @@ public interface ApplicationUserService {
     void delete(Long id);
 
     Optional<ApplicationUserDTO> findByUserLogin(String userLogin);
+
+    Optional<ApplicationUserDTO> getCurrentApplicationUser();
 }

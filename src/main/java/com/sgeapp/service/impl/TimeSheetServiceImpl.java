@@ -74,4 +74,19 @@ public class TimeSheetServiceImpl implements TimeSheetService {
         log.debug("Request to delete TimeSheet : {}", id);
         timeSheetRepository.deleteById(id);
     }
+
+    @Override
+    public List<TimeSheetDTO> findAllByRequestId(Long requestId) {
+        return timeSheetRepository
+            .findAllByRequestId(requestId)
+            .stream()
+            .map(timeSheetMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    @Override
+    public void saveAll(List<TimeSheetDTO> timeSheetDTOList) {
+        List<TimeSheet> timeSheetList = timeSheetDTOList.stream().map(timeSheetMapper::toEntity).collect(Collectors.toList());
+        timeSheetRepository.saveAll(timeSheetList);
+    }
 }

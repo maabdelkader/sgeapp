@@ -65,8 +65,7 @@ public class CampaignResource {
             throw new BadRequestAlertException("A new campaign cannot already have an ID", ENTITY_NAME, "idexists");
         }
         if (campaignDTO.getAdmin() == null) {
-            String userLogin = SecurityUtils.getCurrentUserLogin().get();
-            campaignDTO.setAdmin(applicationUserService.findByUserLogin(userLogin).get());
+            campaignDTO.setAdmin(applicationUserService.getCurrentApplicationUser().get());
         }
         CampaignDTO result = campaignService.save(campaignDTO);
         return ResponseEntity

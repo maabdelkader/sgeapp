@@ -1,8 +1,16 @@
 package com.sgeapp.web.rest;
 
+import com.sgeapp.domain.enumeration.RequestStatus;
+import com.sgeapp.domain.enumeration.TimeSheetStatus;
 import com.sgeapp.repository.RequestRepository;
+import com.sgeapp.repository.TimeSheetRepository;
+import com.sgeapp.security.AuthoritiesConstants;
+import com.sgeapp.service.ApplicationUserService;
 import com.sgeapp.service.RequestService;
+import com.sgeapp.service.TimeSheetService;
+import com.sgeapp.service.dto.ApplicationUserDTO;
 import com.sgeapp.service.dto.RequestDTO;
+import com.sgeapp.service.dto.TimeSheetDTO;
 import com.sgeapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -35,9 +44,20 @@ public class RequestResource {
 
     private final RequestRepository requestRepository;
 
-    public RequestResource(RequestService requestService, RequestRepository requestRepository) {
+    private final ApplicationUserService applicationUserService;
+
+    private final TimeSheetService timeSheetService;
+
+    public RequestResource(
+        RequestService requestService,
+        RequestRepository requestRepository,
+        ApplicationUserService applicationUserService,
+        TimeSheetService timeSheetService
+    ) {
         this.requestService = requestService;
         this.requestRepository = requestRepository;
+        this.applicationUserService = applicationUserService;
+        this.timeSheetService = timeSheetService;
     }
 
     /**
@@ -48,11 +68,22 @@ public class RequestResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/requests")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.CMCAS + "\")")
     public ResponseEntity<RequestDTO> createRequest(@RequestBody RequestDTO requestDTO) throws URISyntaxException {
         log.debug("REST request to save Request : {}", requestDTO);
         if (requestDTO.getId() != null) {
             throw new BadRequestAlertException("A new request cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        ApplicationUserDTO currentUser = applicationUserService.getCurrentApplicationUser().get();
+        Optional<RequestDTO> optionalRequestDTO = requestService.findByCampaignAndOwner(
+            requestDTO.getCompaign().getId(),
+            currentUser.getId()
+        );
+        if (optionalRequestDTO.isPresent()) {
+            throw new BadRequestAlertException("A request already exists for this campaign", ENTITY_NAME, "idexists");
+        }
+        requestDTO.setOwner(currentUser);
+        requestDTO.setStatus(RequestStatus.CREATED);
         RequestDTO result = requestService.save(requestDTO);
         return ResponseEntity
             .created(new URI("/api/requests/" + result.getId()))
@@ -130,14 +161,74 @@ public class RequestResource {
         );
     }
 
+    @PatchMapping("/request/validation/cmcas/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.CMCAS + "\")")
+    public ResponseEntity<RequestDTO> validateRequestByCMCAS(@PathVariable(value = "id", required = false) final Long id) {
+        Optional<RequestDTO> requestDTOOptional = requestService.findOne(id);
+        if (!requestDTOOptional.isPresent()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        RequestDTO requestDTO = requestDTOOptional.get();
+        if (!RequestStatus.CREATED.equals(requestDTO.getStatus())) {
+            throw new BadRequestAlertException("Request not  ready for validation", ENTITY_NAME, "badstatus");
+        }
+        RequestDTO result = updateRequestAndTimeSheetsStatus(
+            requestDTO,
+            RequestStatus.SGE_VALIDATION_PENDING,
+            TimeSheetStatus.SGE_VALIDATION_PENDING
+        );
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, requestDTO.getId().toString()))
+            .body(result);
+    }
+
+    @PatchMapping("/request/validation/sge/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<RequestDTO> validateRequestBySGE(@PathVariable(value = "id", required = false) final Long id) {
+        Optional<RequestDTO> requestDTOOptional = requestService.findOne(id);
+        if (!requestDTOOptional.isPresent()) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        RequestDTO requestDTO = requestDTOOptional.get();
+        if (!RequestStatus.SGE_VALIDATION_PENDING.equals(requestDTO.getStatus())) {
+            throw new BadRequestAlertException("Request not  ready for validation", ENTITY_NAME, "badstatus");
+        }
+        RequestDTO result = updateRequestAndTimeSheetsStatus(
+            requestDTO,
+            RequestStatus.EMPLOYER_VALIDATION_PENDING,
+            TimeSheetStatus.EMPLOYER_VALIDATION_PENDING
+        );
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, requestDTO.getId().toString()))
+            .body(result);
+    }
+
+    private RequestDTO updateRequestAndTimeSheetsStatus(
+        RequestDTO requestDTO,
+        RequestStatus newRequestStatus,
+        TimeSheetStatus newTimeSheetStatus
+    ) {
+        List<TimeSheetDTO> timeSheetDTOList = timeSheetService.findAllByRequestId(requestDTO.getId());
+        timeSheetDTOList.forEach(ts -> ts.setStatus(newTimeSheetStatus));
+        timeSheetService.saveAll(timeSheetDTOList);
+
+        requestDTO.setStatus(newRequestStatus);
+        return requestService.save(requestDTO);
+    }
+
     /**
      * {@code GET  /requests} : get all the requests.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of requests in body.
      */
     @GetMapping("/requests")
-    public List<RequestDTO> getAllRequests() {
+    public List<RequestDTO> getAllRequests(@RequestParam(value = "userId", required = false) Long userId) {
         log.debug("REST request to get all Requests");
+        if (userId != null) {
+            requestService.findAllByOwnerId(userId);
+        }
         return requestService.findAll();
     }
 

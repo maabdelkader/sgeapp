@@ -23,12 +23,14 @@ import { NavbarComponent } from './layouts/navbar/navbar.component';
 import { FooterComponent } from './layouts/footer/footer.component';
 import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
 import { ErrorComponent } from './layouts/error/error.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   imports: [
     BrowserModule,
     SharedModule,
     HomeModule,
+    BrowserAnimationsModule,
     // jhipster-needle-angular-add-module JHipster will add new module here
     AppRoutingModule,
     // Set this to true to enable service worker (PWA)

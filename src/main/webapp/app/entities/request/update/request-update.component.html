@@ -1,68 +1,41 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-request-heading" data-cy="RequestCreateUpdateHeading">Create or edit a Request</h2>
-
-      <div>
-        <jhi-alert-error></jhi-alert-error>
-
-        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
-          <label class="form-label" for="field_id">ID</label>
-          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+    <p-card header="Créer/Modifer une Requete">
+      <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+        <div>
+          <jhi-alert-error></jhi-alert-error>
+          <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+          <div class="row mb-5">
+            <label class="form-label" for="field_compaign">Compaign</label>
+            <select class="form-control" id="field_compaign" data-cy="compaign" name="compaign" formControlName="compaign">
+              <option [ngValue]="null"></option>
+              <option
+                [ngValue]="campaignOption.id === editForm.get('compaign')!.value?.id ? editForm.get('compaign')!.value : campaignOption"
+                *ngFor="let campaignOption of campaignsSharedCollection; trackBy: trackCampaignById"
+              >
+                {{ campaignOption.name }}
+              </option>
+            </select>
+          </div>
         </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_status">Status</label>
-          <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
-            <option [ngValue]="null"></option>
-            <option *ngFor="let requestStatus of requestStatusValues" [value]="requestStatus">requestStatus</option>
-          </select>
+        <div>
+          <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+            <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+          </button>
+          <button
+            type="submit"
+            id="save-entity"
+            data-cy="entityCreateSaveButton"
+            [disabled]="editForm.invalid || isSaving"
+            class="btn btn-primary"
+          >
+            <fa-icon icon="save"></fa-icon>&nbsp;<span>Enregistrer</span>
+          </button>
         </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_owner">Owner</label>
-          <select class="form-control" id="field_owner" data-cy="owner" name="owner" formControlName="owner">
-            <option [ngValue]="null"></option>
-            <option
-              [ngValue]="
-                applicationUserOption.id === editForm.get('owner')!.value?.id ? editForm.get('owner')!.value : applicationUserOption
-              "
-              *ngFor="let applicationUserOption of applicationUsersSharedCollection; trackBy: trackApplicationUserById"
-            >
-              {{ applicationUserOption.id }}
-            </option>
-          </select>
-        </div>
-
-        <div class="row mb-3">
-          <label class="form-label" for="field_compaign">Compaign</label>
-          <select class="form-control" id="field_compaign" data-cy="compaign" name="compaign" formControlName="compaign">
-            <option [ngValue]="null"></option>
-            <option
-              [ngValue]="campaignOption.id === editForm.get('compaign')!.value?.id ? editForm.get('compaign')!.value : campaignOption"
-              *ngFor="let campaignOption of campaignsSharedCollection; trackBy: trackCampaignById"
-            >
-              {{ campaignOption.id }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
-        </button>
-
-        <button
-          type="submit"
-          id="save-entity"
-          data-cy="entityCreateSaveButton"
-          [disabled]="editForm.invalid || isSaving"
-          class="btn btn-primary"
-        >
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
-        </button>
-      </div>
-    </form>
+      </form>
+    </p-card>
   </div>
 </div>
