@@ -7,9 +7,12 @@ import { RequestDeleteDialogComponent } from './delete/request-delete-dialog.com
 import { RequestRoutingModule } from './route/request-routing.module';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
 
+const primeNgModules = [MultiSelectModule, CardModule, ButtonModule, TableModule];
 @NgModule({
-  imports: [MultiSelectModule, CardModule, SharedModule, RequestRoutingModule],
+  imports: [...primeNgModules, SharedModule, RequestRoutingModule],
   declarations: [RequestComponent, RequestDetailComponent, RequestUpdateComponent, RequestDeleteDialogComponent],
   entryComponents: [RequestDeleteDialogComponent],
 })

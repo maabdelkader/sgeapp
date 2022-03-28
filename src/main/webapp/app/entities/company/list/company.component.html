@@ -1,24 +1,23 @@
 <div>
-  <h2 id="page-heading" data-cy="CompanyHeading">
-    <span>Companies</span>
-
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+  <div class="d-flex justify-content-between mb-4">
+    <h2>Companies</h2>
+    <div>
+      <button pButton class="p-button-secondary mx-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>&nbsp;
         <span>Refresh List</span>
       </button>
-
       <button
+        pButton
+        class="btn btn-primary jh-create-entity create-time-sheet"
         id="jh-create-entity"
         data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-company"
         [routerLink]="['/company/new']"
       >
-        <fa-icon icon="plus"></fa-icon>
+        <fa-icon icon="plus"></fa-icon>&nbsp;
         <span> Create a new Company </span>
       </button>
     </div>
-  </h2>
+  </div>
 
   <jhi-alert-error></jhi-alert-error>
 
@@ -29,8 +28,16 @@
   </div>
 
   <div class="table-responsive" id="entities" *ngIf="companies && companies.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
-      <thead>
+    <p-table
+      styleClass="p-datatable-sm"
+      [value]="companies"
+      [paginator]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      responsiveLayout="scroll"
+      aria-describedby="page-heading"
+    >
+      <ng-template pTemplate="header">
         <tr>
           <th scope="col"><span>ID</span></th>
           <th scope="col"><span>Name</span></th>
@@ -39,9 +46,9 @@
           <th scope="col"><span>Social Organization</span></th>
           <th scope="col"></th>
         </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let company of companies; trackBy: trackId" data-cy="entityTable">
+      </ng-template>
+      <ng-template pTemplate="body" let-company>
+        <tr data-cy="entityTable">
           <td>
             <a [routerLink]="['/company', company.id, 'view']">{{ company.id }}</a>
           </td>
@@ -56,45 +63,47 @@
           <td class="text-end">
             <div class="btn-group">
               <button
+                pButton
+                class="p-button-rounded p-button-outlined p-button-sm mx-1"
                 type="submit"
                 [routerLink]="['/company', company.id, 'view']"
-                class="btn btn-info btn-sm"
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
               </button>
-
               <button
+                pButton
+                class="p-button-rounded p-button-outlined p-button-secondary p-button-sm mx-1"
                 *ngIf="company.socialOrganization"
                 type="submit"
                 [routerLink]="['/company', company.id, company.socialOrganization?.id, 'edit']"
-                class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
               </button>
-
               <button
+                pButton
+                class="p-button-rounded p-button-outlined p-button-secondary p-button-sm mx-1"
                 *ngIf="!company.socialOrganization"
                 type="submit"
                 [routerLink]="['/company', company.id, 'edit']"
-                class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
               </button>
-
-              <button type="submit" (click)="delete(company)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                pButton
+                class="p-button-rounded p-button-outlined p-button-danger p-button-sm mx-1"
+                type="submit"
+                (click)="delete(company)"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
               </button>
             </div>
           </td>
         </tr>
-      </tbody>
-    </table>
+      </ng-template>
+    </p-table>
   </div>
 </div>

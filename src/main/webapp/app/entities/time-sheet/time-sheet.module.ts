@@ -7,9 +7,12 @@ import { TimeSheetDeleteDialogComponent } from './delete/time-sheet-delete-dialo
 import { TimeSheetRoutingModule } from './route/time-sheet-routing.module';
 import { CardModule } from 'primeng/card';
 import { PanelModule } from 'primeng/panel';
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
 
+const primeNgModules = [CardModule, ButtonModule, TableModule];
 @NgModule({
-  imports: [CardModule, PanelModule, SharedModule, TimeSheetRoutingModule],
+  imports: [...primeNgModules, CardModule, PanelModule, SharedModule, TimeSheetRoutingModule],
   declarations: [TimeSheetComponent, TimeSheetDetailComponent, TimeSheetUpdateComponent, TimeSheetDeleteDialogComponent],
   entryComponents: [TimeSheetDeleteDialogComponent],
 })

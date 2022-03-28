@@ -1,12 +1,20 @@
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center" *ngIf="currentUser">
   <div class="col-8">
-    <p-card header="Créer/Modifer une Requete">
+    <p-card header="Créer/Modifer une Requête">
       <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
         <div>
           <jhi-alert-error></jhi-alert-error>
           <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
             <label class="form-label" for="field_id">ID</label>
             <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+          <div class="row mb-3">
+            <label class="form-label">Utilisateur</label>
+            <input class="form-control" type="text" [value]="currentUser.login" readonly />
+          </div>
+          <div class="row mb-3">
+            <label class="form-label">Statut</label>
+            <input class="form-control" type="text" value="Created" readonly />
           </div>
           <div class="row mb-5">
             <label class="form-label" for="field_compaign">Compaign</label>
@@ -22,17 +30,29 @@
           </div>
         </div>
         <div>
-          <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-            <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+          <button
+            pButton
+            pRipple
+            label="Annuler"
+            type="button"
+            id="cancel-save"
+            data-cy="entityCreateCancelButton"
+            class="p-button-secondary ml-2"
+            (click)="previousState()"
+          >
+            <span class="pi pi-arrow-left"></span>&nbsp;
           </button>
           <button
+            pButton
+            pRipple
+            label="Enregistrer"
             type="submit"
             id="save-entity"
             data-cy="entityCreateSaveButton"
             [disabled]="editForm.invalid || isSaving"
-            class="btn btn-primary"
+            class="p-button-primary"
           >
-            <fa-icon icon="save"></fa-icon>&nbsp;<span>Enregistrer</span>
+            <span class="pi pi-check"></span>&nbsp;
           </button>
         </div>
       </form>

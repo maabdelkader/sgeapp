@@ -1,24 +1,23 @@
 <div>
-  <h2 id="page-heading" data-cy="TimeSheetHeading">
-    <span>Liste des entrées</span>
-
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+  <div class="d-flex justify-content-between mb-4">
+    <h2>Liste des entrées</h2>
+    <div>
+      <button pButton class="p-button-secondary mx-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>&nbsp;
         <span>Refresher</span>
       </button>
-
       <button
+        pButton
+        class="btn btn-primary jh-create-entity create-time-sheet"
         id="jh-create-entity"
         data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-time-sheet"
         [routerLink]="['/time-sheet/new']"
       >
-        <fa-icon icon="plus"></fa-icon>
+        <fa-icon icon="plus"></fa-icon>&nbsp;
         <span> Créer une nouvelle feuille</span>
       </button>
     </div>
-  </h2>
+  </div>
 
   <jhi-alert-error></jhi-alert-error>
 
@@ -28,9 +27,17 @@
     <span>No timeSheets found</span>
   </div>
 
-  <div class="table-responsive" id="entities" *ngIf="timeSheets && timeSheets.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
-      <thead>
+  <div id="entities" *ngIf="timeSheets && timeSheets.length > 0">
+    <p-table
+      styleClass="p-datatable-sm"
+      [value]="timeSheets"
+      [paginator]="true"
+      [rows]="10"
+      [showCurrentPageReport]="true"
+      responsiveLayout="scroll"
+      aria-describedby="page-heading"
+    >
+      <ng-template pTemplate="header">
         <tr>
           <th scope="col"><span>ID</span></th>
           <th scope="col"><span>Civilité</span></th>
@@ -60,9 +67,9 @@
           <th scope="col"><span>Company</span></th>
           <th scope="col"></th>
         </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let timeSheet of timeSheets; trackBy: trackId" data-cy="entityTable">
+      </ng-template>
+      <ng-template pTemplate="body" let-timeSheet>
+        <tr data-cy="entityTable">
           <td>
             <a [routerLink]="['/time-sheet', timeSheet.id, 'view']">{{ timeSheet.id }}</a>
           </td>
@@ -102,33 +109,36 @@
           <td class="text-end">
             <div class="btn-group">
               <button
+                pButton
+                class="p-button-rounded p-button-outlined p-button-sm mx-1"
                 type="submit"
                 [routerLink]="['/time-sheet', timeSheet.id, 'view']"
-                class="btn btn-info btn-sm"
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
               </button>
-
               <button
                 type="submit"
+                pButton
+                class="p-button-rounded p-button-outlined p-button-secondary p-button-sm mx-1"
                 [routerLink]="['/time-sheet', timeSheet.id, 'edit']"
-                class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
               </button>
-
-              <button type="submit" (click)="delete(timeSheet)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                pButton
+                class="p-button-rounded p-button-outlined p-button-danger p-button-sm mx-1"
+                type="submit"
+                (click)="delete(timeSheet)"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
               </button>
             </div>
           </td>
         </tr>
-      </tbody>
-    </table>
+      </ng-template>
+    </p-table>
   </div>
 </div>
