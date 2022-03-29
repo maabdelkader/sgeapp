@@ -1,24 +1,23 @@
 <div>
-  <h2 id="page-heading" data-cy="CampaignHeading">
-    <span>Campagnes</span>
-
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+  <div class="d-flex justify-content-between mb-4">
+    <h2>Campagnes</h2>
+    <div>
+      <button pButton class="p-button-secondary mx-2" (click)="loadAll()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>&nbsp;
         <span>Rafraichir la liste</span>
       </button>
-
       <button
+        pButton
         id="jh-create-entity"
         data-cy="entityCreateButton"
         class="btn btn-primary jh-create-entity create-campaign"
         [routerLink]="['/campaign/new']"
       >
-        <fa-icon icon="plus"></fa-icon>
+        <fa-icon icon="plus"></fa-icon>&nbsp;
         <span> Créer une Campagne </span>
       </button>
     </div>
-  </h2>
+  </div>
 
   <jhi-alert-error></jhi-alert-error>
 
@@ -58,28 +57,33 @@
           <td class="text-end">
             <div class="btn-group">
               <button
+                pButton
+                class="p-button-rounded p-button-outlined p-button-sm mx-1"
                 type="submit"
                 [routerLink]="['/campaign', campaign.id, 'view']"
-                class="btn btn-info btn-sm"
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline">View</span>
               </button>
 
               <button
+                pButton
+                class="p-button-rounded p-button-outlined p-button-secondary p-button-sm mx-1"
                 type="submit"
                 [routerLink]="['/campaign', campaign.id, 'edit']"
-                class="btn btn-primary btn-sm"
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
               </button>
 
-              <button type="submit" (click)="delete(campaign)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                pButton
+                class="p-button-rounded p-button-outlined p-button-danger p-button-sm mx-1"
+                type="submit"
+                (click)="delete(campaign)"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline">Delete</span>
               </button>
             </div>
           </td>

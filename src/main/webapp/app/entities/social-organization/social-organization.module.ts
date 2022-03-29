@@ -5,9 +5,10 @@ import { SocialOrganizationDetailComponent } from './detail/social-organization-
 import { SocialOrganizationUpdateComponent } from './update/social-organization-update.component';
 import { SocialOrganizationDeleteDialogComponent } from './delete/social-organization-delete-dialog.component';
 import { SocialOrganizationRoutingModule } from './route/social-organization-routing.module';
-
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
 @NgModule({
-  imports: [SharedModule, SocialOrganizationRoutingModule],
+  imports: [ButtonModule, TableModule, SharedModule, SocialOrganizationRoutingModule],
   declarations: [
     SocialOrganizationComponent,
     SocialOrganizationDetailComponent,
