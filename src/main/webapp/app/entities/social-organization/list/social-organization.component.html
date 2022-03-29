@@ -1,11 +1,11 @@
 <div>
   <h2 id="page-heading" data-cy="SocialOrganizationHeading">
-    <span>Social Organizations</span>
+    <span>Contingents</span>
 
     <div class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span>Refresh List</span>
+        <span>Rafraichir List</span>
       </button>
 
       <button
@@ -15,7 +15,7 @@
         [routerLink]="['/social-organization/new']"
       >
         <fa-icon icon="plus"></fa-icon>
-        <span> Create a new Social Organization </span>
+        <span> Créer un nouveau contingent </span>
       </button>
     </div>
   </h2>
@@ -33,11 +33,11 @@
       <thead>
         <tr>
           <th scope="col"><span>ID</span></th>
-          <th scope="col"><span>Name</span></th>
-          <th scope="col"><span>Admin Quota</span></th>
-          <th scope="col"><span>Commission Quota</span></th>
-          <th scope="col"><span>Proximity Quota</span></th>
-          <th scope="col"><span>Number Of Admins</span></th>
+          <th scope="col"><span>Nom</span></th>
+          <th scope="col"><span>Administrateur</span></th>
+          <th scope="col"><span>Commission</span></th>
+          <th scope="col"><span>Proximité</span></th>
+          <th scope="col"><span>Nombre d'administrateur</span></th>
           <th scope="col"></th>
         </tr>
       </thead>
