@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="company">
-      <h2 data-cy="companyDetailsHeading"><span>Company</span></h2>
+      <h2 data-cy="companyDetailsHeading"><span>Oragnisation</span></h2>
 
       <hr />
 
@@ -14,19 +14,19 @@
         <dd>
           <span>{{ company.id }}</span>
         </dd>
-        <dt><span>Name</span></dt>
+        <dt><span>Nom</span></dt>
         <dd>
           <span>{{ company.name }}</span>
         </dd>
-        <dt><span>Raison Social</span></dt>
+        <dt><span>Raisone Social</span></dt>
         <dd>
           <span>{{ company.raisonSocial }}</span>
         </dd>
-        <dt><span>Company Type</span></dt>
+        <dt><span>Type d'organisation</span></dt>
         <dd>
           <span>{{ company.companyType }}</span>
         </dd>
-        <dt><span>Social Organization</span></dt>
+        <dt><span>Organization Social</span></dt>
         <dd>
           <div *ngIf="company.socialOrganization">
             <a [routerLink]="['/social-organization', company.socialOrganization?.id, 'view']">{{ company.socialOrganization?.id }}</a>

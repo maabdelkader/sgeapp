@@ -7,4 +7,5 @@ public enum CompanyType {
     SGE,
     CMCAS,
     ENTERPRISE,
+    EMPLOYEUR,
 }
