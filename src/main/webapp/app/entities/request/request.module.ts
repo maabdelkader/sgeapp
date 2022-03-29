@@ -9,11 +9,18 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { RequestTimesheetListComponent } from './request-timesheet-list/request-timesheet-list';
 
 const primeNgModules = [MultiSelectModule, CardModule, ButtonModule, TableModule];
 @NgModule({
   imports: [...primeNgModules, SharedModule, RequestRoutingModule],
-  declarations: [RequestComponent, RequestDetailComponent, RequestUpdateComponent, RequestDeleteDialogComponent],
+  declarations: [
+    RequestTimesheetListComponent,
+    RequestComponent,
+    RequestDetailComponent,
+    RequestUpdateComponent,
+    RequestDeleteDialogComponent,
+  ],
   entryComponents: [RequestDeleteDialogComponent],
 })
 export class RequestModule {}

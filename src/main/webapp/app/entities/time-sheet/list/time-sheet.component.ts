@@ -5,6 +5,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ITimeSheet } from '../time-sheet.model';
 import { TimeSheetService } from '../service/time-sheet.service';
 import { TimeSheetDeleteDialogComponent } from '../delete/time-sheet-delete-dialog.component';
+import { RequestService } from 'app/entities/request/service/request.service';
+import { IRequest } from 'app/entities/request/request.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'jhi-time-sheet',
@@ -12,9 +15,17 @@ import { TimeSheetDeleteDialogComponent } from '../delete/time-sheet-delete-dial
 })
 export class TimeSheetComponent implements OnInit {
   timeSheets?: ITimeSheet[];
+  requests?: any;
+  selectedRequest?: any;
   isLoading = false;
+  display = false;
 
-  constructor(protected timeSheetService: TimeSheetService, protected modalService: NgbModal) {}
+  constructor(
+    protected timeSheetService: TimeSheetService,
+    protected modalService: NgbModal,
+    private requestService: RequestService,
+    private router: Router
+  ) {}
 
   loadAll(): void {
     this.isLoading = true;
@@ -28,6 +39,11 @@ export class TimeSheetComponent implements OnInit {
         this.isLoading = false;
       },
     });
+
+    this.requestService.query().subscribe(data => {
+      this.requests = data.body;
+      console.log(this.requests);
+    });
   }
 
   ngOnInit(): void {
@@ -36,6 +52,14 @@ export class TimeSheetComponent implements OnInit {
 
   trackId(index: number, item: ITimeSheet): number {
     return item.id!;
+  }
+
+  showDialog() {
+    this.display = true;
+  }
+
+  newTimesheet() {
+    this.router.navigate(['/time-sheet/new/', this.selectedRequest[0]]);
   }
 
   delete(timeSheet: ITimeSheet): void {

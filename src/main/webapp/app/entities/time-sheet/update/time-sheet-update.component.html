@@ -47,16 +47,18 @@
               </div>
               <div class="row mb-3">
                 <div class="col-4">
-                  <label class="form-label" for="field_registryNumber">Nombre d'enregistrement</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="registryNumber"
-                    id="field_registryNumber"
-                    data-cy="registryNumber"
-                    formControlName="registryNumber"
-                  />
+                  <label class="form-label" for="field_company">Company</label>
+                  <select class="form-control" id="field_company" data-cy="company" name="company" formControlName="company">
+                    <option [ngValue]="null"></option>
+                    <option
+                      [ngValue]="companyOption.id === editForm.get('company')!.value?.id ? editForm.get('company')!.value : companyOption"
+                      *ngFor="let companyOption of companiesSharedCollection; trackBy: trackCompanyById"
+                    >
+                      {{ companyOption.name }}
+                    </option>
+                  </select>
                 </div>
+
                 <div class="col-4">
                   <label class="form-label" for="field_direction">Direction</label>
                   <input
@@ -81,10 +83,23 @@
                 </div>
               </div>
               <div class="row mb-3">
-                <div class="col-3">
+                <div class="col-4">
                   <label class="form-label" for="field_um">Um</label>
                   <input type="text" class="form-control" name="um" id="field_um" data-cy="um" formControlName="um" />
                 </div>
+
+                <div class="col-4">
+                  <label class="form-label" for="field_registryNumber">Nombre d'enregistrement</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="registryNumber"
+                    id="field_registryNumber"
+                    data-cy="registryNumber"
+                    formControlName="registryNumber"
+                  />
+                </div>
+
                 <!-- <div class="col-6">
                   <label class="form-label" for="field_status">Status</label>
                   <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
@@ -299,43 +314,38 @@
             </p-panel>
           </div>
 
-          <div class="mb-5">
+          <!-- <div class="mb-5">
             <p-panel header="Autre" [toggleable]="true">
               <div class="row mb-3">
                 <div class="col-6">
                   <label class="form-label" for="field_request">Request</label>
                   <input type="text" class="form-control" [value]="requestId" readOnly />
                 </div>
-
-                <div class="col-6">
-                  <label class="form-label" for="field_company">Company</label>
-                  <select class="form-control" id="field_company" data-cy="company" name="company" formControlName="company">
-                    <option [ngValue]="null"></option>
-                    <option
-                      [ngValue]="companyOption.id === editForm.get('company')!.value?.id ? editForm.get('company')!.value : companyOption"
-                      *ngFor="let companyOption of companiesSharedCollection; trackBy: trackCompanyById"
-                    >
-                      {{ companyOption.name }}
-                    </option>
-                  </select>
-                </div>
               </div>
             </p-panel>
-          </div>
+          </div> -->
         </div>
 
         <div>
-          <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-            <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
+          <button
+            pButton
+            type="button"
+            id="cancel-save"
+            data-cy="entityCreateCancelButton"
+            class="p-button-secondary"
+            (click)="previousState()"
+          >
+            <span class="pi pi-arrow-left"></span>&nbsp;<span>Annuler</span>
           </button>
           <button
+            pButton
             type="submit"
             id="save-entity"
             data-cy="entityCreateSaveButton"
             [disabled]="editForm.invalid || isSaving"
             class="btn btn-primary"
           >
-            <fa-icon icon="save"></fa-icon>&nbsp;<span>Enregistrer</span>
+            <span class="pi pi-check"></span>&nbsp;<span>Enregistrer</span>
           </button>
         </div>
       </form>
