@@ -1,10 +1,10 @@
 <div>
   <div class="d-flex justify-content-between mb-4">
-    <h2>Companies</h2>
+    <h2>Organisations</h2>
     <div>
       <button pButton class="p-button-secondary mx-2" (click)="loadAll()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>&nbsp;
-        <span>Refresh List</span>
+        <span>Rafraichir</span>
       </button>
       <button
         pButton
@@ -14,7 +14,7 @@
         [routerLink]="['/company/new']"
       >
         <fa-icon icon="plus"></fa-icon>&nbsp;
-        <span> Create a new Company </span>
+        <span> Créer une organisation </span>
       </button>
     </div>
   </div>
@@ -40,10 +40,10 @@
       <ng-template pTemplate="header">
         <tr>
           <th scope="col"><span>ID</span></th>
-          <th scope="col"><span>Name</span></th>
-          <th scope="col"><span>Raison Social</span></th>
-          <th scope="col"><span>Company Type</span></th>
-          <th scope="col"><span>Social Organization</span></th>
+          <th scope="col"><span>nom</span></th>
+          <th scope="col"><span>Raison Sociale</span></th>
+          <th scope="col"><span>Type d'organisation</span></th>
+          <th scope="col"><span>Contingents</span></th>
           <th scope="col"></th>
         </tr>
       </ng-template>

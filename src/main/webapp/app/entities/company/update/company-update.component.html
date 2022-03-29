@@ -1,7 +1,7 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-company-heading" data-cy="CompanyCreateUpdateHeading">Create or edit a Company</h2>
+      <h2 id="jhi-company-heading" data-cy="CompanyCreateUpdateHeading">Créer/Modifier une organisation</h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
@@ -12,12 +12,12 @@
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" for="field_name">Name</label>
+          <label class="form-label" for="field_name">Nom</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" for="field_raisonSocial">Raison Social</label>
+          <label class="form-label" for="field_raisonSocial">Raison Sociale</label>
           <input
             type="text"
             class="form-control"
@@ -29,7 +29,7 @@
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" for="field_companyType">Company Type</label>
+          <label class="form-label" for="field_companyType">Type d'organisation</label>
           <select
             (change)="resetSocialOrgForm()"
             class="form-control"
@@ -44,17 +44,17 @@
         </div>
 
         <div formGroupName="socialOrganization" *ngIf="isCMCAS()">
-          <h2>Social Organisation</h2>
+          <h2>Contingent</h2>
           <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
             <label class="form-label" for="field_id">ID</label>
             <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
-          <div class="row mb-3">
+          <!-- <div class="row mb-3">
             <label class="form-label" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
-          </div>
+          </div> -->
           <div class="row mb-3">
-            <label class="form-label" for="field_adminQuota">Admin Quota</label>
+            <label class="form-label" for="field_adminQuota">Administrateur</label>
             <input
               type="number"
               class="form-control"
@@ -65,7 +65,7 @@
             />
           </div>
           <div class="row mb-3">
-            <label class="form-label" for="field_commissionQuota">Commission Quota</label>
+            <label class="form-label" for="field_commissionQuota">Commission</label>
             <input
               type="number"
               class="form-control"
@@ -76,7 +76,7 @@
             />
           </div>
           <div class="row mb-3">
-            <label class="form-label" for="field_proximityQuota">Proximity Quota</label>
+            <label class="form-label" for="field_proximityQuota">Proximité</label>
             <input
               type="number"
               class="form-control"
@@ -87,7 +87,7 @@
             />
           </div>
           <div class="row mb-3">
-            <label class="form-label" for="field_numberOfAdmins">Number Of Admins</label>
+            <label class="form-label" for="field_numberOfAdmins">Nombre d'admnistrateur</label>
             <input
               type="number"
               class="form-control"
@@ -101,7 +101,7 @@
 
         <div>
           <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
-            <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+            <fa-icon icon="ban"></fa-icon>&nbsp;<span>Annuler</span>
           </button>
           <button
             type="submit"
@@ -110,7 +110,7 @@
             [disabled]="editForm.invalid || isSaving"
             class="btn btn-primary"
           >
-            <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+            <fa-icon icon="save"></fa-icon>&nbsp;<span>Enregistrer</span>
           </button>
         </div>
       </div>
