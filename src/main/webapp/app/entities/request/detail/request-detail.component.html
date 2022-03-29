@@ -1,7 +1,13 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <div *ngIf="request">
-      <h2 data-cy="requestDetailsHeading"><span>Request</span></h2>
+      <div class="d-flex justify-content-between">
+        <h2 data-cy="requestDetailsHeading"><span>Request</span></h2>
+        <div>
+          <button (click)="navigateToRequestTimesheets()" class="p-button-secondary" pButton>Lister les timehseet</button>
+          <button (click)="navigateToTimehseetForm()" pButton>Ajouter une timehseet</button>
+        </div>
+      </div>
 
       <hr />
 

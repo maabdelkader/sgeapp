@@ -6,6 +6,8 @@ import { RequestComponent } from '../list/request.component';
 import { RequestDetailComponent } from '../detail/request-detail.component';
 import { RequestUpdateComponent } from '../update/request-update.component';
 import { RequestRoutingResolveService } from './request-routing-resolve.service';
+import { RequestTimesheetListComponent } from '../request-timesheet-list/request-timesheet-list';
+import { RequestTimesheetsResolveService } from './request-timesheets-resolve.service';
 
 const requestRoute: Routes = [
   {
@@ -18,6 +20,14 @@ const requestRoute: Routes = [
     component: RequestDetailComponent,
     resolve: {
       request: RequestRoutingResolveService,
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: ':id/view/timesheets',
+    component: RequestTimesheetListComponent,
+    resolve: {
+      timesheets: RequestTimesheetsResolveService,
     },
     canActivate: [UserRouteAccessService],
   },

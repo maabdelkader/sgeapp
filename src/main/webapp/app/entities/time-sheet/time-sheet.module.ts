@@ -9,8 +9,11 @@ import { CardModule } from 'primeng/card';
 import { PanelModule } from 'primeng/panel';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { MultiSelectModule } from 'primeng/multiselect';
 
-const primeNgModules = [CardModule, ButtonModule, TableModule];
+const primeNgModules = [MultiSelectModule, OverlayPanelModule, DialogModule, CardModule, ButtonModule, TableModule];
 @NgModule({
   imports: [...primeNgModules, CardModule, PanelModule, SharedModule, TimeSheetRoutingModule],
   declarations: [TimeSheetComponent, TimeSheetDetailComponent, TimeSheetUpdateComponent, TimeSheetDeleteDialogComponent],
